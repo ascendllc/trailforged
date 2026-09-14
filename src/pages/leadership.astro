@@ -1,0 +1,111 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import LeadershipCard from "../components/LeadershipCard.astro";
+
+const leaders = (await getCollection("leadership")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Leadership & Structure"
+  description="How Trail Life Troop 337 is organized — Woodlands Trail and Navigators & Adventurers — and who leads each part of the troop."
+>
+  <section class="section section--white">
+    <div class="container">
+      <SectionHeading eyebrow="How We're Organized" title="Leadership & Structure" />
+
+      <div class="structure">
+        <div class="structure-panel">
+          <h3>Woodlands Trail</h3>
+          <p class="age-range">Younger Trailmen &middot; Grades K&ndash;5</p>
+          <p>
+            Woodlands Trail builds foundational outdoor skills and character basics through games,
+            hands-on activities, and mentorship, as Trailmen work toward earning branch pins on the
+            path to the Timberline Award.
+          </p>
+        </div>
+
+        <div class="structure-panel">
+          <h3>Navigators &amp; Adventurers</h3>
+          <p class="age-range">Older Trailmen &middot; Grades 6&ndash;12</p>
+          <p>
+            Navigators &amp; Adventurers takes on rank advancement, more independence, and real
+            leadership responsibility, as Trailmen work toward the Freedom Award.
+          </p>
+        </div>
+      </div>
+
+      <a class="program-link" href="https://www.traillifeusa.com/program-overview/" target="_blank" rel="noopener noreferrer">
+        See the full national Program Overview &rarr;
+      </a>
+    </div>
+  </section>
+
+  <section class="section section--warm">
+    <div class="container">
+      <SectionHeading eyebrow="Meet the Team" title="Troop Leadership" />
+
+      <div class="roster">
+        {
+          leaders.map((leader) => (
+            <LeadershipCard
+              name={leader.data.name}
+              role={leader.data.role}
+              bio={leader.data.bio}
+              email={leader.data.email}
+              contactLink={leader.data.contactLink}
+              anchorId={leader.data.anchorId}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .structure {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .structure-panel {
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+  }
+
+  .structure-panel h3 {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tl-red);
+  }
+
+  .age-range {
+    font-weight: 700;
+    color: var(--tl-brown);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .program-link {
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .roster {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 800px) {
+    .structure,
+    .roster {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

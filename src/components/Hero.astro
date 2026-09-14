@@ -1,0 +1,114 @@
+---
+import { Image } from "astro:assets";
+import Button from "./Button.astro";
+import heroPhoto from "../../assets/photos/stock/hero-troop-outdoors.jpg";
+---
+
+<section class="hero">
+  {/* Sourced from traillifeusa.com — swap for a real Troop 337 photo once available (Section 9 asset checklist) */}
+  <Image
+    src={heroPhoto}
+    alt="A Trailmen leader teaching knot-tying to a group of boys at a campsite"
+    class="hero-media"
+    widths={[640, 1024, 1600]}
+    sizes="100vw"
+    quality={80}
+  />
+  <div class="hero-overlay"></div>
+
+  <div class="container hero-content">
+    <p class="kicker">Trail Life Troop 337 &middot; Federal Way, WA</p>
+    <h1>Adventure. Character. Leadership.</h1>
+    <p class="lede">
+      A Christ-centered outdoor adventure program for boys, meeting at Northwest Church in Federal Way.
+    </p>
+    <div class="cta-row">
+      <Button href="#meeting-info">Visit Our Troop</Button>
+      <Button href="#what-is-trail-life" variant="outline">What Is Trail Life?</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 640px;
+    display: flex;
+    align-items: flex-end;
+    color: var(--tl-white);
+    overflow: hidden;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    /* Layered scrim: darkest behind the text zone (bottom-left) so the headline stays
+       legible regardless of what's happening in the photo underneath it. */
+    background:
+      linear-gradient(115deg, rgba(1, 1, 1, 0.82) 0%, rgba(1, 1, 1, 0.55) 40%, rgba(1, 1, 1, 0.15) 75%),
+      linear-gradient(0deg, rgba(1, 1, 1, 0.7) 0%, rgba(1, 1, 1, 0.15) 55%);
+  }
+
+  .hero-content {
+    position: relative;
+    padding-block: 4rem 4.5rem;
+    max-width: 760px;
+  }
+
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--tl-orange);
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 8px rgba(1, 1, 1, 0.6);
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 2px 16px rgba(1, 1, 1, 0.55);
+  }
+
+  .lede {
+    font-size: 1.2rem;
+    color: var(--tl-off-white);
+    margin-bottom: 2rem;
+    max-width: 55ch;
+    text-shadow: 0 1px 10px rgba(1, 1, 1, 0.6);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .cta-row :global(.btn--outline) {
+    border-color: var(--tl-white);
+    color: var(--tl-white);
+  }
+
+  .cta-row :global(.btn--outline:hover) {
+    background: var(--tl-white);
+    color: var(--tl-black);
+  }
+
+  .cta-row :global(.btn--outline:active) {
+    background: var(--tl-orange);
+    border-color: var(--tl-orange);
+    color: var(--tl-black);
+  }
+</style>

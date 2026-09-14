@@ -1,0 +1,96 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+
+const cards = [
+  {
+    label: "Vision",
+    color: "var(--tl-red)",
+    body: "To be the premier character development troop for young men in Federal Way, producing godly and responsible husbands, fathers, and citizens right here in our community.",
+  },
+  {
+    label: "Mission",
+    color: "var(--tl-brown)",
+    body: "To guide generations of courageous young men to honor God, lead with integrity, serve others, and experience outdoor adventure.",
+  },
+];
+---
+
+<section class="section section--white">
+  <div class="container">
+    <SectionHeading title="Vision, Mission & Motto" />
+
+    <div class="cards">
+      {
+        cards.map((card) => (
+          <div class="card" style={`border-top-color:${card.color}`}>
+            <p class="card-label" style={`color:${card.color}`}>
+              {card.label}
+            </p>
+            <p class="card-body">{card.body}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <blockquote class="motto">
+      <p>&ldquo;Walk Worthy&rdquo;</p>
+      <cite>Colossians 1:10</cite>
+    </blockquote>
+  </div>
+</section>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .card {
+    background: var(--tl-warm-gray);
+    border-top: 4px solid;
+    border-radius: var(--radius);
+    padding: 1.75rem;
+  }
+
+  .card-label {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .card-body {
+    margin: 0;
+    color: var(--tl-text);
+  }
+
+  .motto {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 40ch;
+  }
+
+  .motto p {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--tl-brown);
+    margin-bottom: 0.5rem;
+  }
+
+  .motto cite {
+    font-style: normal;
+    color: var(--tl-text-muted);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 640px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,155 @@
+---
+import { Image } from "astro:assets";
+import Button from "./Button.astro";
+import trailLifeLogo from "../../assets/brand/TL_InLine_Logo_Tag_RGB.webp";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/leadership", label: "Leadership" },
+  { href: "/calendar", label: "Calendar" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand">
+      {/* TODO(Brad): this is the generic national mark — swap for the troop-337-customized version (troop number + URL beneath) once you generate one from the official template. */}
+      <Image src={trailLifeLogo} alt="Trail Life USA" class="brand-logo" width={300} height={111} />
+      <span class="brand-troop">Troop 337</span>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul>
+        {
+          navLinks.map((link) => (
+            <li>
+              <a href={link.href} aria-current={currentPath === link.href ? "page" : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <Button href="/#meeting-info" class="header-cta">Visit Our Troop</Button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--tl-white);
+    border-bottom: 1px solid var(--tl-warm-gray);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding-block: 0.85rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--tl-black);
+    margin-right: auto;
+    border-radius: 4px;
+  }
+
+  .brand-logo {
+    height: 44px;
+    width: auto;
+  }
+
+  .brand-troop {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--tl-brown);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-left: 0.6rem;
+    border-left: 2px solid var(--tl-warm-gray);
+    transition: color 0.15s ease;
+  }
+
+  .brand:hover .brand-troop {
+    color: var(--tl-red);
+  }
+
+  .brand:active .brand-troop {
+    color: var(--tl-red-dark);
+  }
+
+  .brand:focus-visible {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 3px;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    color: var(--tl-black);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding-block: 0.25rem;
+    border-bottom: 2px solid transparent;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  nav a:hover {
+    color: var(--tl-red);
+    border-bottom-color: var(--tl-orange);
+  }
+
+  nav a:active {
+    color: var(--tl-red-dark);
+    border-bottom-color: var(--tl-red-dark);
+  }
+
+  nav a[aria-current="page"] {
+    border-bottom-color: var(--tl-red);
+  }
+
+  nav a:focus-visible {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .header-cta {
+    padding: 0.6em 1.25em;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 720px) {
+    nav {
+      order: 3;
+      width: 100%;
+    }
+
+    nav ul {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

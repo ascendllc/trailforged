@@ -1,0 +1,32 @@
+/* Trail Life Troop 337 — design tokens
+   Sourced from the Trail Life USA Brand Style Guide. Do not alter these hex values. */
+:root {
+  /* Primary */
+  --tl-red: #ba262d;
+  --tl-red-dark: #8f1e23;
+  --tl-brown: #876237;
+  --tl-black: #010101;
+
+  /* Secondary */
+  --tl-orange: #f49322;
+  --tl-green: #728e38;
+  --tl-blue: #005c85;
+
+  /* Neutral */
+  --tl-off-white: #faf8f4;
+  --tl-warm-gray: #f1eee7;
+  --tl-white: #ffffff;
+
+  /* Text */
+  --tl-text: var(--tl-black);
+  --tl-text-muted: #4a4a48;
+
+  /* Typography */
+  --font-body: "Open Sans", system-ui, sans-serif;
+  --font-accent: "PT Serif", Georgia, serif;
+
+  /* Layout */
+  --max-width: 1200px;
+  --radius: 6px;
+  --shadow-card: 0 2px 10px rgba(1, 1, 1, 0.08);
+}

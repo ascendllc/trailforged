@@ -1,0 +1,44 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { FIND_A_TROOP_URL } from "../lib/constants";
+---
+
+<section class="section section--white">
+  <div class="container narrow">
+    <SectionHeading eyebrow="Get Involved" title="Parent Engagement & Volunteering" />
+
+    <p>
+      Trail Life runs on parent involvement &mdash; it&rsquo;s part of the design, not an ask on top of
+      it. Troops led entirely by volunteer parents and church members give every boy consistent,
+      trustworthy adult mentorship. Whether you can commit to a regular leadership role or just show
+      up and help out at outings, there&rsquo;s a place for you.
+    </p>
+
+    <p>
+      <strong>Matthew Kennedy</strong> serves as our Membership Chair. Whether you&rsquo;re ready to join
+      or just have questions about getting involved, click below to send us a message directly.
+      <a class="inline-contact" href={FIND_A_TROOP_URL} target="_blank" rel="noopener noreferrer">Contact Us &rarr;</a>
+    </p>
+
+    <a class="resource-link" href="https://www.traillifeusa.com/raising-godly-boys/" target="_blank" rel="noopener noreferrer">
+      Resources for parents: Raising Godly Boys &rarr;
+    </a>
+  </div>
+</section>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+
+  .resource-link {
+    display: inline-block;
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+
+  .inline-contact {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+</style>

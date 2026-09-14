@@ -1,0 +1,211 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { FIND_A_TROOP_URL } from "../lib/constants";
+
+const contactUsLink = `<a href="${FIND_A_TROOP_URL}" target="_blank" rel="noopener noreferrer">Contact Us</a>`;
+
+interface FaqItem {
+  q: string;
+  /** May contain trusted inline HTML (e.g. a link) — rendered with set:html. */
+  a: string;
+}
+
+interface FaqGroup {
+  title: string;
+  items: FaqItem[];
+}
+
+const groups: FaqGroup[] = [
+  {
+    title: "About Trail Life",
+    items: [
+      {
+        q: "What is Trail Life USA?",
+        a: "A Christian, church-based outdoor adventure and character-development program for boys ages 5-17, focused on adventure, character, and leadership.",
+      },
+      {
+        q: "What are Trailmen?",
+        a: "That's what we call our youth members — boys enrolled in the program, from kindergarten through high school.",
+      },
+      {
+        q: "Is this a religious program?",
+        a: "Yes — Trail Life is unapologetically Christ-centered. Faith is woven through everything we do, from devotions at meetings to the character qualities we teach.",
+      },
+      {
+        q: "Does my son have to be a member of Northwest Church to join?",
+        a: "No. Boys of any faith background (or none) are welcome. We do ask that families be supportive of a Christian program, since faith is central to what we do.",
+      },
+      {
+        q: "What age can my son start?",
+        a: "Boys can join as young as 5 and continue through age 17, advancing through the program with boys their age.",
+      },
+      {
+        q: "How is the program structured by age?",
+        a: "We break Trailmen into two main groups: Woodlands Trail (younger Trailmen, K-5) and Navigators & Adventurers (older Trailmen, 6th-12th grade). See our Leadership & Structure page for the full breakdown.",
+      },
+      {
+        q: "What do Trailmen actually do?",
+        a: "Weekly meetings mix hands-on skills, teamwork, and faith-based discussion, plus a monthly weekend outdoor adventure — hiking, backpacking, or camping.",
+      },
+    ],
+  },
+  {
+    title: "Troop 337 Specifics",
+    items: [
+      {
+        q: "Where and when does Troop 337 meet?",
+        a: "Mondays at Northwest Church, 34800 21st Ave SW, Federal Way — 6:30-8:00 PM for younger Trailmen, 6:30-8:30 PM for Navigators & Adventurers.",
+      },
+      {
+        q: "How do I get in touch with Troop 337?",
+        a: `Click ${contactUsLink} — on the page that opens, search "Federal Way, WA" (or zip 98023), find Troop WA-0337 in the results, and click "Connect with Troop WA-0337" to send us a message directly. We'll get back to you as soon as we can.`,
+      },
+      {
+        q: "Do you meet year-round?",
+        a: `${contactUsLink} and we'll fill you in on our current meeting calendar.`,
+      },
+      {
+        q: "What outdoor trips does Troop 337 do?",
+        a: "We get outside once a month on a weekend — day hikes, backpacking trips, and campouts — in addition to our weekly meetings.",
+      },
+      {
+        q: "Is there a cost to join?",
+        a: `There's a small annual national Trail Life membership fee, plus troop dues that cover our local activities and gear. ${contactUsLink} for current troop dues.`,
+      },
+      {
+        q: "Do I need to buy a uniform right away?",
+        a: "No — new families can wait a bit before uniforming up. We'll walk you through what's needed once you've joined.",
+      },
+      {
+        q: "How do I sign my son up?",
+        a: `${contactUsLink} and we'll take it from there and get you set up to visit a Monday meeting.`,
+      },
+    ],
+  },
+  {
+    title: "Safety & Parent Involvement",
+    items: [
+      {
+        q: "What safety measures are in place?",
+        a: "Every adult leader completes a national background check and Child Safety & Youth Protection training before working with Trailmen. We follow Trail Life's “1-2-3” protection standards: no one-on-one contact between an adult and a boy, two-deep adult leadership at all times, and a buddy system of at least three for Trailmen.",
+      },
+      {
+        q: "Do parents need to be involved?",
+        a: "Yes, and we mean that as a feature, not a chore — Trail Life is built on parent and church-member volunteers. The younger boys (Foxes, ages 5-6) need a parent at meetings; older boys' parents are encouraged to pitch in where they can.",
+      },
+      {
+        q: "Who do I talk to about volunteering?",
+        a: `${contactUsLink} and we'll connect you with the right person to get involved.`,
+      },
+      {
+        q: "My son isn't particularly outdoorsy — is this still for him?",
+        a: "Absolutely. Trail Life meets boys where they are and grows their confidence and skills over time; it's not a bootcamp, it's mentorship with adventure built in.",
+      },
+      {
+        q: "What if we can't make it every week?",
+        a: "Come when you can — consistency helps, but life happens. Reach out to your son's group leader if you'll be away for a while.",
+      },
+    ],
+  },
+];
+---
+
+<section class="section section--white">
+  <div class="container narrow">
+    <SectionHeading title="Frequently Asked Questions" />
+
+    {
+      groups.map((group) => (
+        <div class="faq-group">
+          <h3>{group.title}</h3>
+          <div class="faq-list">
+            {group.items.map((item) => (
+              <details class="faq-item">
+                <summary>{item.q}</summary>
+                <p set:html={item.a} />
+              </details>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+
+    <p class="more-faq">
+      Still have questions? See the <a href="https://www.traillifeusa.com/faqs/" target="_blank" rel="noopener noreferrer">national Trail Life USA FAQ</a> too, or read more on <a href="https://www.traillifeusa.com/childsafety/" target="_blank" rel="noopener noreferrer">Trail Life's child safety standards</a>.
+    </p>
+  </div>
+</section>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+
+  .faq-group {
+    margin-bottom: 2rem;
+  }
+
+  .faq-group h3 {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 1rem;
+    color: var(--tl-brown);
+    margin-bottom: 1rem;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .faq-item {
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    padding: 0.9rem 1.1rem;
+  }
+
+  .faq-item[open] {
+    border-color: var(--tl-brown);
+    background: var(--tl-white);
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::after {
+    content: "+";
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--tl-red);
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .faq-item[open] summary::after {
+    content: "\2212";
+  }
+
+  .faq-item p {
+    margin: 0.75rem 0 0;
+    color: var(--tl-text-muted);
+  }
+
+  .more-faq {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--tl-text-muted);
+  }
+</style>

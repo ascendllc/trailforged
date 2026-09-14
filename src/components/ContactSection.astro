@@ -1,0 +1,73 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import Button from "./Button.astro";
+import { FIND_A_TROOP_URL } from "../lib/constants";
+---
+
+<section id="contact" class="section section--warm">
+  <div class="container narrow">
+    <SectionHeading title="Contact" />
+
+    <div class="card">
+      <p class="troop-name">Trail Life Troop 337</p>
+      <p>Chartered through Northwest Church</p>
+      <p>34800 21st Ave SW, Federal Way, WA 98023</p>
+
+      <p class="invite">
+        New family? The best way to connect with us is to click below &mdash; we&rsquo;re happy to
+        answer questions before you show up.
+      </p>
+
+      <Button href={FIND_A_TROOP_URL} target="_blank">Contact Us</Button>
+
+      <p class="hint">
+        On the page that opens, search &ldquo;Federal Way, WA&rdquo; (or zip 98023) and select <strong>Troop WA-0337</strong> to send us a message.
+      </p>
+
+      <p class="direct-line">
+        <a href="tel:+12538386321">(253) 838-6321</a> &middot; <a href="mailto:info@nwcfoursquare.org">info@nwcfoursquare.org</a>
+      </p>
+      {/* TODO(Brad): confirm troop-specific contact — church general line vs. support@tl-wa-0337.atlassian.net (brief Section 10, item 1) */}
+    </div>
+  </div>
+</section>
+
+<style>
+  .narrow {
+    max-width: 700px;
+  }
+
+  .card {
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .troop-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--tl-red);
+    margin-bottom: 0.25rem;
+  }
+
+  .invite {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hint {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.82rem;
+    color: var(--tl-text-muted);
+  }
+
+  .direct-line {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--tl-text-muted);
+  }
+</style>

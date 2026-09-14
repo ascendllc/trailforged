@@ -1,0 +1,87 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+
+const pillars = ["Christ-Centered", "Church-Owned", "Boy-Focused"];
+const growthAreas = ["Wisdom", "Heritage", "Teamwork", "Leadership", "Character", "Faith"];
+---
+
+<section id="what-is-trail-life" class="section section--warm">
+  <div class="container narrow">
+    <SectionHeading eyebrow="New to Trail Life?" title="What Is Trail Life?" />
+
+    <p>
+      Trail Life USA is a Christian, church-based outdoor adventure program for boys ages 5&ndash;17,
+      built on three distinctives:
+      {" "}
+      {pillars.map((p, i) => (
+        <>
+          <strong class="pillar">{p}</strong>
+          {i < pillars.length - 1 ? ", " : ""}
+        </>
+      ))}.
+      Through weekly meetings, hands-on skills, and monthly outdoor adventures &mdash; hiking, camping,
+      backpacking &mdash; Trailmen grow in six areas:
+    </p>
+
+    <ul class="growth-list">
+      {growthAreas.map((area) => <li>{area}</li>)}
+    </ul>
+
+    <p>
+      It&rsquo;s mentorship and adventure with a clear purpose: raising boys into godly, capable men.
+    </p>
+
+    <p>
+      Troop 337 is Trail Life&rsquo;s local expression of that mission here in Federal Way, chartered
+      through Northwest Church.
+    </p>
+
+    <div class="links">
+      <a href="https://www.traillifeusa.com/distinctives/" target="_blank" rel="noopener noreferrer">
+        Learn more at TrailLifeUSA.org &rarr;
+      </a>
+      <a href="https://www.youtube.com/user/TrailLifeUSA/videos" target="_blank" rel="noopener noreferrer">
+        Watch on the Trail Life USA YouTube channel &rarr;
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+
+  .pillar {
+    color: var(--tl-red);
+  }
+
+  .growth-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+  }
+
+  .growth-list li {
+    background: var(--tl-white);
+    border: 1px solid var(--tl-brown);
+    color: var(--tl-brown);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.4em 0.9em;
+    border-radius: 999px;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-weight: 600;
+  }
+</style>

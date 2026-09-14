@@ -1,0 +1,186 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { getUpcomingEvents, CALENDAR_FEED_URL } from "../lib/calendar";
+
+const events = await getUpcomingEvents();
+
+function formatEventDate(date: Date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatEventTime(date: Date) {
+  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+---
+
+<BaseLayout
+  title="Calendar"
+  description="Troop 337's meeting schedule and upcoming outdoor adventures, pulled from our public Trail Life Connect calendar."
+>
+  <section class="section section--white">
+    <div class="container narrow">
+      <SectionHeading eyebrow="Schedule" title="Calendar" />
+
+      <div class="recap">
+        <p class="headline">We meet Mondays at Northwest Church.</p>
+        <p>34800 21st Ave SW, Federal Way, WA 98023</p>
+        <ul>
+          <li><strong>6:30 &ndash; 8:00 PM</strong> &mdash; Woodlands Trail Trailmen (grades K&ndash;5)</li>
+          <li><strong>6:30 &ndash; 8:30 PM</strong> &mdash; Navigators &amp; Adventurers (grades 6&ndash;12)</li>
+        </ul>
+        <p>
+          Our monthly outdoor adventure &mdash; hikes, backpacking, and camping &mdash; happens roughly
+          once a month on weekends. Specific dates are below.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--warm">
+    <div class="container narrow">
+      <h3 class="upcoming-title">Upcoming Events</h3>
+
+      {
+        events.length > 0 ? (
+          <ul class="event-list">
+            {events.map((event) => (
+              <li class="event">
+                <div class="event-date">
+                  <span class="day">{formatEventDate(event.start)}</span>
+                  <span class="time">{formatEventTime(event.start)}</span>
+                </div>
+                <div class="event-body">
+                  <p class="event-title">{event.title}</p>
+                  {event.location && <p class="event-location">{event.location}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="feed-fallback">
+            We couldn't load the live calendar feed right now &mdash; use the subscribe link below to
+            see the full up-to-date schedule.
+          </p>
+        )
+      }
+
+      <div class="subscribe">
+        <p>
+          <strong>Subscribe to this calendar</strong> &mdash; add it directly to your Google, Apple, or
+          Outlook calendar so you always have the latest schedule.
+        </p>
+        <a class="feed-link" href={CALENDAR_FEED_URL}>View / Subscribe to the full calendar &rarr;</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .narrow {
+    max-width: 720px;
+  }
+
+  .headline {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--tl-red);
+    margin-bottom: 0.25rem;
+  }
+
+  .recap ul {
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .recap li {
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+  }
+
+  .upcoming-title {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 1rem;
+    color: var(--tl-brown);
+    margin-bottom: 1.25rem;
+  }
+
+  .event-list {
+    list-style: none;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .event {
+    display: flex;
+    gap: 1.25rem;
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 1rem 1.25rem;
+    align-items: center;
+  }
+
+  .event-date {
+    display: flex;
+    flex-direction: column;
+    min-width: 130px;
+    flex-shrink: 0;
+  }
+
+  .event-date .day {
+    font-weight: 700;
+    color: var(--tl-red);
+    font-size: 0.9rem;
+  }
+
+  .event-date .time {
+    font-size: 0.8rem;
+    color: var(--tl-text-muted);
+  }
+
+  .event-title {
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .event-location {
+    font-size: 0.85rem;
+    color: var(--tl-text-muted);
+    margin: 0.2rem 0 0;
+  }
+
+  .feed-fallback {
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .subscribe {
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 1.5rem;
+  }
+
+  .feed-link {
+    display: inline-block;
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+</style>

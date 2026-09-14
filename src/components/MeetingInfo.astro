@@ -1,0 +1,127 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import Button from "./Button.astro";
+import { FIND_A_TROOP_URL } from "../lib/constants";
+
+const address = "34800 21st Ave SW, Federal Way, WA 98023";
+const mapQuery = encodeURIComponent(address);
+---
+
+<section id="meeting-info" class="section section--white">
+  <div class="container split">
+    <div>
+      <SectionHeading align="left" title="Where & When We Meet" />
+
+      <p class="headline">We meet Mondays at Northwest Church.</p>
+      <p class="address">{address}</p>
+
+      <ul class="times">
+        <li><strong>6:30 &ndash; 8:00 PM</strong> &mdash; Woodlands Trail Trailmen (grades K&ndash;5)</li>
+        <li><strong>6:30 &ndash; 8:30 PM</strong> &mdash; Navigators &amp; Adventurers (grades 6&ndash;12)</li>
+      </ul>
+
+      <p>
+        Once a month, we trade the meeting room for the outdoors &mdash; hikes, backpacking trips, and
+        campouts on weekends throughout the year.
+      </p>
+
+      <div class="get-in-touch">
+        <p>Thinking about visiting? The best way to get ahold of us first is to reach out.</p>
+        <Button href={FIND_A_TROOP_URL} target="_blank">Contact Us</Button>
+        <p class="get-in-touch-hint">
+          On the page that opens, search &ldquo;Federal Way, WA&rdquo; (or zip 98023) and select <strong>Troop WA-0337</strong> to send us a message.
+        </p>
+      </div>
+
+      <a class="cal-link" href="/calendar">See our full schedule &rarr;</a>
+    </div>
+
+    <div class="map-wrap">
+      <iframe
+        title="Map to Northwest Church, Federal Way, WA"
+        src={`https://maps.google.com/maps?q=${mapQuery}&output=embed`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .headline {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--tl-red);
+    margin-bottom: 0.25rem;
+  }
+
+  .address {
+    color: var(--tl-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .times {
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .times li {
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+  }
+
+  .get-in-touch {
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+  }
+
+  .get-in-touch p {
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
+  }
+
+  .get-in-touch-hint {
+    margin: 0.85rem 0 0;
+    font-size: 0.82rem;
+    color: var(--tl-text-muted);
+  }
+
+  .cal-link {
+    display: inline-block;
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+
+  .map-wrap {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    aspect-ratio: 4 / 3;
+  }
+
+  .map-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (max-width: 800px) {
+    .split {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "fall-campout",
+    "title": "Fall Campout — Details Coming Soon",
+    "date": "2026-10-17",
+    "photoUrl": "",
+    "blurb": "A weekend campout for the whole troop — location and sign-up details coming soon."
+  },
+  {
+    "id": "monthly-hike",
+    "title": "Monthly Hike — Details Coming Soon",
+    "date": "2026-10-03",
+    "photoUrl": "",
+    "blurb": "Our regular monthly day hike — trail and meeting time to be announced."
+  },
+  {
+    "id": "backpacking-trip",
+    "title": "Backpacking Trip — Details Coming Soon",
+    "date": "2026-11-07",
+    "photoUrl": "",
+    "blurb": "An overnight backpacking trip for older Trailmen — route and gear list coming soon."
+  },
+  {
+    "id": "family-night",
+    "title": "Family Night — Details Coming Soon",
+    "date": "2026-11-16",
+    "photoUrl": "",
+    "blurb": "A troop-wide family gathering at Northwest Church — details coming soon."
+  }
+]

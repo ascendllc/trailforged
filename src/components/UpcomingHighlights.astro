@@ -1,0 +1,188 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
+import fallbackEvents from "../data/upcomingEvents.json";
+
+const liveEvents = await getUpcomingHighlights(4);
+const usingFallback = liveEvents.length === 0;
+
+interface FallbackEvent {
+  id: string;
+  title: string;
+  date: string;
+  blurb: string;
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Campout: "var(--tl-green)",
+  "Special Event": "var(--tl-orange)",
+  "Open House": "var(--tl-blue)",
+};
+const DEFAULT_CATEGORY_COLOR = "var(--tl-brown)";
+
+function formatDate(iso: string) {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function truncate(text: string, max = 120) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
+}
+---
+
+<section class="section section--warm">
+  <div class="container">
+    <SectionHeading eyebrow="What's Coming Up" title="Upcoming Highlights" />
+
+    <div class="grid">
+      {
+        usingFallback
+          ? (fallbackEvents as FallbackEvent[]).map((event) => (
+              <article class="card">
+                <div class="photo" style={`background:linear-gradient(135deg, var(--tl-green) 0%, var(--tl-blue) 100%)`}>
+                  <span class="date-badge">{formatDate(event.date)}</span>
+                </div>
+                <div class="card-body">
+                  <h3>{event.title}</h3>
+                  <p class="blurb">{event.blurb}</p>
+                </div>
+              </article>
+            ))
+          : (liveEvents as TroopEvent[]).map((event) => (
+              <article class="card">
+                <div class="photo" style={`background:${CATEGORY_COLORS[event.category] ?? DEFAULT_CATEGORY_COLOR}`}>
+                  <span class="category-badge">{event.category}</span>
+                  <span class="date-badge">{formatDate(event.date)}</span>
+                </div>
+                <div class="card-body">
+                  <h3>{event.title}</h3>
+                  <p class="relative">{event.when} &middot; {event.relative}</p>
+                  <p class="blurb">{truncate(event.description)}</p>
+                </div>
+              </article>
+            ))
+      }
+    </div>
+
+    {
+      usingFallback && (
+        <p class="feed-note">
+          We couldn't load live events just now — check back soon, or see the{" "}
+          <a href="/calendar">full calendar</a> directly.
+        </p>
+      )
+    }
+
+    {
+      !usingFallback && (
+        <a class="see-all" href="/calendar">See the full calendar &rarr;</a>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .photo {
+    aspect-ratio: 16 / 9;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0.6rem;
+  }
+
+  .category-badge {
+    background: rgba(1, 1, 1, 0.35);
+    color: var(--tl-white);
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.3em 0.6em;
+    border-radius: 999px;
+  }
+
+  .date-badge {
+    align-self: flex-end;
+    background: var(--tl-white);
+    color: var(--tl-black);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.3em 0.7em;
+    border-radius: 999px;
+  }
+
+  .card-body {
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .card-body h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .relative {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--tl-brown);
+    margin: 0;
+  }
+
+  .blurb {
+    font-size: 0.9rem;
+    color: var(--tl-text-muted);
+    margin: 0;
+    flex: 1;
+  }
+
+  .feed-note {
+    margin: 1.5rem 0 0;
+    font-size: 0.9rem;
+    color: var(--tl-text-muted);
+    text-align: center;
+  }
+
+  .see-all {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

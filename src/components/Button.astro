@@ -1,0 +1,72 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "outline";
+  class?: string;
+  target?: "_blank";
+}
+
+const { href, variant = "primary", class: className = "", target } = Astro.props;
+const rel = target === "_blank" ? "noopener noreferrer" : undefined;
+---
+
+<a href={href} class={`btn btn--${variant} ${className}`} target={target} rel={rel}>
+  <slot />
+</a>
+
+<style>
+  .btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.85em 1.75em;
+    border-radius: var(--radius);
+    border: 2px solid var(--tl-red);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.1s ease;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--tl-brown);
+    outline-offset: 2px;
+  }
+
+  .btn--primary {
+    background: var(--tl-red);
+    color: var(--tl-white);
+  }
+
+  .btn--primary:hover {
+    background: var(--tl-red-dark);
+    border-color: var(--tl-red-dark);
+  }
+
+  .btn--primary:active {
+    background: var(--tl-brown);
+    border-color: var(--tl-brown);
+  }
+
+  .btn--outline {
+    background: transparent;
+    color: var(--tl-red);
+  }
+
+  .btn--outline:hover {
+    background: var(--tl-red);
+    color: var(--tl-white);
+  }
+
+  .btn--outline:active {
+    background: var(--tl-brown);
+    border-color: var(--tl-brown);
+    color: var(--tl-white);
+  }
+</style>

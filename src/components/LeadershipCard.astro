@@ -1,0 +1,94 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  bio?: string;
+  email?: string;
+  contactLink?: string;
+  anchorId?: string;
+}
+
+const { name, role, bio, email, contactLink, anchorId } = Astro.props;
+const link = contactLink ?? (email ? `mailto:${email}` : undefined);
+const isPlaceholder = name.includes("TBD");
+---
+
+<div class="leader-card" id={anchorId}>
+  <div class="avatar" aria-hidden="true">
+    {
+      isPlaceholder ? (
+        <span class="avatar-initials">?</span>
+      ) : (
+        <span class="avatar-initials">
+          {name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}
+        </span>
+      )
+    }
+  </div>
+  <div class="leader-info">
+    <p class="leader-role">{role}</p>
+    <p class="leader-name">{name}</p>
+    {bio && <p class="leader-bio">{bio}</p>}
+    {link && (
+      <a class="leader-link" href={link}>
+        Contact {name.includes("TBD") ? "the troop" : name.split(" ")[0]} &rarr;
+      </a>
+    )}
+  </div>
+</div>
+
+<style>
+  .leader-card {
+    display: flex;
+    gap: 1rem;
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 1.25rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--tl-warm-gray);
+    display: grid;
+    place-items: center;
+  }
+
+  .avatar-initials {
+    font-weight: 700;
+    color: var(--tl-brown);
+  }
+
+  .leader-role {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--tl-orange);
+    margin: 0 0 0.2rem;
+  }
+
+  .leader-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+  }
+
+  .leader-bio {
+    font-size: 0.9rem;
+    color: var(--tl-text-muted);
+    margin: 0 0 0.35rem;
+  }
+
+  .leader-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+</style>

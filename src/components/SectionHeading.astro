@@ -1,0 +1,49 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  align?: "left" | "center";
+  underlineColor?: string;
+}
+
+const { eyebrow, title, align = "center", underlineColor = "var(--tl-red)" } = Astro.props;
+---
+
+<div class={`section-heading section-heading--${align}`}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2>{title}</h2>
+  <span class="rule" style={`background:${underlineColor}`}></span>
+</div>
+
+<style>
+  .section-heading {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-heading--center {
+    text-align: center;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--tl-brown);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .rule {
+    display: inline-block;
+    width: 64px;
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 0.75rem;
+  }
+</style>

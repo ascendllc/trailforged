@@ -1,0 +1,134 @@
+---
+import Button from "./Button.astro";
+import { FIND_A_TROOP_URL } from "../lib/constants";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container grid">
+    <div>
+      <p class="footer-title">Trail Life Troop 337</p>
+      <p>
+        Northwest Church<br />
+        34800 21st Ave SW<br />
+        Federal Way, WA 98023
+      </p>
+      <p>Mondays, 6:30 PM &mdash; see <a href="/#meeting-info">meeting times</a></p>
+    </div>
+
+    <div>
+      <p class="footer-title">Links</p>
+      <ul class="footer-links">
+        <li><a href="https://www.traillifeusa.com/" target="_blank" rel="noopener noreferrer">Trail Life USA</a></li>
+        <li><a href="https://nwcfoursquare.org/" target="_blank" rel="noopener noreferrer">Northwest Church</a></li>
+        <li><a href="/leadership">Leadership</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="footer-title">Connect</p>
+      <Button href={FIND_A_TROOP_URL} target="_blank" class="footer-cta">Contact Us</Button>
+      <p class="footer-hint">
+        On the page that opens, search &ldquo;Federal Way, WA&rdquo; (or zip 98023) and select <strong>Troop WA-0337</strong> to send us a message.
+      </p>
+    </div>
+  </div>
+
+  <div class="container copyright">
+    <p>&copy; {year} Trail Life Troop 337, chartered through Northwest Church. Trail Life USA&reg; is a registered trademark of Trail Life USA, Inc.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--tl-black);
+    color: var(--tl-off-white);
+    padding-block: 3rem 1.5rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .footer-title {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--tl-orange);
+    margin-bottom: 0.75rem;
+  }
+
+  .site-footer p {
+    margin: 0 0 0.5em;
+    font-size: 0.95rem;
+    color: var(--tl-warm-gray);
+  }
+
+  .site-footer a {
+    color: var(--tl-off-white);
+    text-decoration-color: rgba(250, 248, 244, 0.5);
+    transition: color 0.15s ease;
+  }
+
+  .site-footer a:hover {
+    color: var(--tl-orange);
+    text-decoration-color: currentColor;
+  }
+
+  .site-footer a:active {
+    color: var(--tl-white);
+  }
+
+  .site-footer a:focus-visible {
+    outline: 2px solid var(--tl-orange);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  :global(.footer-cta) {
+    display: inline-block;
+    padding: 0.55em 1.25em;
+    font-size: 0.9rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .footer-hint {
+    font-size: 0.82rem;
+    opacity: 0.85;
+    margin: 0;
+  }
+
+  .copyright {
+    border-top: 1px solid rgba(250, 248, 244, 0.15);
+    padding-top: 1.25rem;
+  }
+
+  .copyright p {
+    font-size: 0.8rem;
+    color: var(--tl-warm-gray);
+    opacity: 0.75;
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>
