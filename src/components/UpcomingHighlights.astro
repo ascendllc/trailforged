@@ -1,17 +1,12 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
 import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
-import fallbackEvents from "../data/upcomingEvents.json";
+import fallbackEventsData from "../data/upcomingEvents.json";
 
+const fallbackEvents = fallbackEventsData as TroopEvent[];
 const liveEvents = await getUpcomingHighlights(4);
 const usingFallback = liveEvents.length === 0;
-
-interface FallbackEvent {
-  id: string;
-  title: string;
-  date: string;
-  blurb: string;
-}
+const events = usingFallback ? fallbackEvents : liveEvents;
 
 const CATEGORY_COLORS: Record<string, string> = {
   Campout: "var(--tl-green)",
@@ -20,17 +15,20 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 const DEFAULT_CATEGORY_COLOR = "var(--tl-brown)";
 
-function formatDate(iso: string) {
-  return new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+function monthBadge(when: TroopEvent["when"]) {
+  return when.month.slice(0, 3);
 }
 
-function truncate(text: string, max = 120) {
-  if (text.length <= max) return text;
-  const cut = text.slice(0, max);
-  return `${cut.slice(0, cut.lastIndexOf(" "))}…`;
+function whenDetail(when: TroopEvent["when"]) {
+  const dayType = when.day_type === "weekend" ? "Weekend" : "Weekday";
+  const span = when.multi_day ? "multiple days" : "single day";
+  return `${dayType} · ${span}`;
+}
+
+function cleanDescription(text: string, max = 160) {
+  let out = text.length > max ? `${text.slice(0, max).slice(0, text.slice(0, max).lastIndexOf(" "))}…` : text;
+  if (!/[.!?…]$/.test(out)) out += "…";
+  return out;
 }
 ---
 
@@ -40,31 +38,23 @@ function truncate(text: string, max = 120) {
 
     <div class="grid">
       {
-        usingFallback
-          ? (fallbackEvents as FallbackEvent[]).map((event) => (
-              <article class="card">
-                <div class="photo" style={`background:linear-gradient(135deg, var(--tl-green) 0%, var(--tl-blue) 100%)`}>
-                  <span class="date-badge">{formatDate(event.date)}</span>
-                </div>
-                <div class="card-body">
-                  <h3>{event.title}</h3>
-                  <p class="blurb">{event.blurb}</p>
-                </div>
-              </article>
-            ))
-          : (liveEvents as TroopEvent[]).map((event) => (
-              <article class="card">
-                <div class="photo" style={`background:${CATEGORY_COLORS[event.category] ?? DEFAULT_CATEGORY_COLOR}`}>
-                  <span class="category-badge">{event.category}</span>
-                  <span class="date-badge">{formatDate(event.date)}</span>
-                </div>
-                <div class="card-body">
-                  <h3>{event.title}</h3>
-                  <p class="relative">{event.when} &middot; {event.relative}</p>
-                  <p class="blurb">{truncate(event.description)}</p>
-                </div>
-              </article>
-            ))
+        events.map((event) => (
+          <article class="card">
+            {event.image?.url ? (
+              <img class="photo" src={event.image.url} alt={event.image.alt ?? event.title} loading="lazy" />
+            ) : (
+              <div class="photo" style={`background:${CATEGORY_COLORS[event.category] ?? DEFAULT_CATEGORY_COLOR}`}>
+                <span class="category-badge">{event.category}</span>
+                <span class="date-badge">{monthBadge(event.when)}</span>
+              </div>
+            )}
+            <div class="card-body">
+              <h3>{event.title}</h3>
+              <p class="when-detail">{whenDetail(event.when)}</p>
+              <p class="blurb">{cleanDescription(event.description)}</p>
+            </div>
+          </article>
+        ))
       }
     </div>
 
@@ -108,6 +98,8 @@ function truncate(text: string, max = 120) {
     align-items: flex-start;
     justify-content: space-between;
     padding: 0.6rem;
+    object-fit: cover;
+    width: 100%;
   }
 
   .category-badge {
@@ -127,6 +119,7 @@ function truncate(text: string, max = 120) {
     color: var(--tl-black);
     font-weight: 700;
     font-size: 0.8rem;
+    text-transform: uppercase;
     padding: 0.3em 0.7em;
     border-radius: 999px;
   }
@@ -144,7 +137,7 @@ function truncate(text: string, max = 120) {
     margin: 0;
   }
 
-  .relative {
+  .when-detail {
     font-size: 0.78rem;
     font-weight: 700;
     text-transform: uppercase;

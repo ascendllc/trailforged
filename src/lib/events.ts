@@ -1,13 +1,25 @@
 export const EVENTS_FEED_URL = "https://tl-compass.praesyn.com/feed/troop-events.json";
 
+export interface TroopEventWhen {
+  month: string; // e.g. "September"
+  day_type: "weekday" | "weekend" | string;
+  multi_day: boolean;
+  span: string; // e.g. "single day", "multiple days"
+}
+
+export interface TroopEventImage {
+  url?: string;
+  alt?: string;
+}
+
 export interface TroopEvent {
   id: string;
   title: string;
   category: string;
-  date: string; // ISO date
-  when: string; // e.g. "Monday, September 14"
-  relative: string; // e.g. "in 2 weeks"
+  when: TroopEventWhen;
   description: string;
+  image: TroopEventImage;
+  index: number; // feed's own chronological ordering — no absolute date is provided
 }
 
 interface FeedResponse {
@@ -18,6 +30,9 @@ interface FeedResponse {
  * Build-time fetch of the troop's live Trail Life Compass events feed.
  * Returns an empty array on any failure so the section can fall back to the
  * local placeholder data instead of breaking the build.
+ *
+ * The feed only gives month-level precision (no day/year) — `index` is the
+ * feed's own upcoming-first ordering, so we sort on that instead of a date.
  */
 export async function getUpcomingHighlights(limit = 4): Promise<TroopEvent[]> {
   try {
@@ -25,12 +40,10 @@ export async function getUpcomingHighlights(limit = 4): Promise<TroopEvent[]> {
     if (!res.ok) throw new Error(`Feed responded ${res.status}`);
 
     const data = (await res.json()) as FeedResponse;
-    // Compare using Federal Way's local date, not the build server's (e.g. Vercel runs in UTC).
-    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 
     return data.events
-      .filter((event) => event.date >= today)
-      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice()
+      .sort((a, b) => a.index - b.index)
       .slice(0, limit);
   } catch (error) {
     console.warn("[events] Could not fetch the troop events feed at build time:", error);

@@ -1,30 +1,38 @@
 [
   {
-    "id": "fall-campout",
+    "id": "fallback-1",
     "title": "Fall Campout — Details Coming Soon",
-    "date": "2026-10-17",
-    "photoUrl": "",
-    "blurb": "A weekend campout for the whole troop — location and sign-up details coming soon."
+    "category": "Campout",
+    "when": { "month": "October", "day_type": "weekend", "multi_day": true, "span": "multiple days" },
+    "description": "A weekend campout for the whole troop — location and sign-up details coming soon.",
+    "image": {},
+    "index": 1
   },
   {
-    "id": "monthly-hike",
+    "id": "fallback-2",
     "title": "Monthly Hike — Details Coming Soon",
-    "date": "2026-10-03",
-    "photoUrl": "",
-    "blurb": "Our regular monthly day hike — trail and meeting time to be announced."
+    "category": "Special Event",
+    "when": { "month": "October", "day_type": "weekend", "multi_day": false, "span": "single day" },
+    "description": "Our regular monthly day hike — trail and meeting time to be announced.",
+    "image": {},
+    "index": 2
   },
   {
-    "id": "backpacking-trip",
+    "id": "fallback-3",
     "title": "Backpacking Trip — Details Coming Soon",
-    "date": "2026-11-07",
-    "photoUrl": "",
-    "blurb": "An overnight backpacking trip for older Trailmen — route and gear list coming soon."
+    "category": "Campout",
+    "when": { "month": "November", "day_type": "weekend", "multi_day": true, "span": "multiple days" },
+    "description": "An overnight backpacking trip for older Trailmen — route and gear list coming soon.",
+    "image": {},
+    "index": 3
   },
   {
-    "id": "family-night",
+    "id": "fallback-4",
     "title": "Family Night — Details Coming Soon",
-    "date": "2026-11-16",
-    "photoUrl": "",
-    "blurb": "A troop-wide family gathering at Northwest Church — details coming soon."
+    "category": "Special Event",
+    "when": { "month": "November", "day_type": "weekday", "multi_day": false, "span": "single day" },
+    "description": "A troop-wide family gathering at Northwest Church — details coming soon.",
+    "image": {},
+    "index": 4
   }
 ]
