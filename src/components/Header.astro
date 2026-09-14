@@ -20,23 +20,55 @@ const currentPath = Astro.url.pathname;
       <span class="brand-troop">Troop 337</span>
     </a>
 
-    <nav aria-label="Primary">
-      <ul>
-        {
-          navLinks.map((link) => (
-            <li>
-              <a href={link.href} aria-current={currentPath === link.href ? "page" : undefined}>
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <button
+      type="button"
+      class="menu-toggle"
+      id="menu-toggle"
+      aria-expanded="false"
+      aria-controls="nav-panel"
+      aria-label="Toggle menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
-    <Button href="/#meeting-info" class="header-cta">Visit Our Troop</Button>
+    <div class="nav-panel" id="nav-panel">
+      <nav aria-label="Primary">
+        <ul>
+          {
+            navLinks.map((link) => (
+              <li>
+                <a href={link.href} aria-current={currentPath === link.href ? "page" : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <Button href="/#meeting-info" class="header-cta">Visit Our Troop</Button>
+    </div>
   </div>
 </header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const panel = document.getElementById("nav-panel");
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = panel?.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  panel?.addEventListener("click", (event) => {
+    if ((event.target as HTMLElement).closest("a")) {
+      panel.classList.remove("is-open");
+      toggle?.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>
 
 <style>
   .site-header {
@@ -94,6 +126,56 @@ const currentPath = Astro.url.pathname;
     outline-offset: 3px;
   }
 
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--tl-black);
+    border-radius: 2px;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .menu-toggle:focus-visible {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 2px;
+  }
+
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-panel {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
   nav ul {
     display: flex;
     flex-wrap: wrap;
@@ -142,14 +224,36 @@ const currentPath = Astro.url.pathname;
   }
 
   @media (max-width: 720px) {
-    nav {
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav-panel {
+      display: none;
       order: 3;
       width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .nav-panel.is-open {
+      display: flex;
     }
 
     nav ul {
-      gap: 1rem;
-      font-size: 0.9rem;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.6rem 0.25rem;
+    }
+
+    .header-cta {
+      text-align: center;
     }
   }
 </style>
