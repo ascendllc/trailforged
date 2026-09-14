@@ -25,7 +25,8 @@ export async function getUpcomingHighlights(limit = 4): Promise<TroopEvent[]> {
     if (!res.ok) throw new Error(`Feed responded ${res.status}`);
 
     const data = (await res.json()) as FeedResponse;
-    const today = new Date().toISOString().slice(0, 10);
+    // Compare using Federal Way's local date, not the build server's (e.g. Vercel runs in UTC).
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 
     return data.events
       .filter((event) => event.date >= today)

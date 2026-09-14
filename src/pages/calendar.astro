@@ -5,17 +5,27 @@ import { getUpcomingEvents, CALENDAR_FEED_URL } from "../lib/calendar";
 
 const events = await getUpcomingEvents();
 
+// Troop 337 meets in Federal Way, WA — pin formatting to Pacific time so the
+// displayed schedule is correct regardless of the server's local timezone
+// (e.g. Vercel's build machines run in UTC).
+const TROOP_TIMEZONE = "America/Los_Angeles";
+
 function formatEventDate(date: Date) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: TROOP_TIMEZONE,
   });
 }
 
 function formatEventTime(date: Date) {
-  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: TROOP_TIMEZONE,
+  });
 }
 ---
 
