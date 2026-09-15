@@ -1,6 +1,6 @@
 ---
 import Button from "./Button.astro";
-import { FIND_A_TROOP_URL } from "../lib/constants";
+import { CONTACT_FORM_URL } from "../lib/constants";
 
 const year = new Date().getFullYear();
 ---
@@ -29,10 +29,7 @@ const year = new Date().getFullYear();
 
     <div>
       <p class="footer-title">Connect</p>
-      <Button href={FIND_A_TROOP_URL} target="_blank" class="footer-cta">Contact Us</Button>
-      <p class="footer-hint">
-        On the page that opens, search &ldquo;Federal Way, WA&rdquo; (or zip 98023) and select <strong>Troop WA-0337</strong> to send us a message.
-      </p>
+      <Button href={CONTACT_FORM_URL} target="_blank" class="footer-cta" data-contact-trigger="true">Contact Us</Button>
     </div>
   </div>
 
@@ -104,13 +101,6 @@ const year = new Date().getFullYear();
     display: inline-block;
     padding: 0.55em 1.25em;
     font-size: 0.9rem;
-    margin-bottom: 0.85rem;
-  }
-
-  .footer-hint {
-    font-size: 0.82rem;
-    opacity: 0.85;
-    margin: 0;
   }
 
   .copyright {

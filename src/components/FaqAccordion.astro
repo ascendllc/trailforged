@@ -1,8 +1,8 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
-import { FIND_A_TROOP_URL } from "../lib/constants";
+import { CONTACT_FORM_URL } from "../lib/constants";
 
-const contactUsLink = `<a href="${FIND_A_TROOP_URL}" target="_blank" rel="noopener noreferrer">Contact Us</a>`;
+const contactUsLink = `<a href="${CONTACT_FORM_URL}" target="_blank" rel="noopener noreferrer" data-contact-trigger="true">Contact Us</a>`;
 
 interface FaqItem {
   q: string;
@@ -58,7 +58,7 @@ const groups: FaqGroup[] = [
       },
       {
         q: "How do I get in touch with Troop 337?",
-        a: `Click ${contactUsLink} — on the page that opens, search "Federal Way, WA" (or zip 98023), find Troop WA-0337 in the results, and click "Connect with Troop WA-0337" to send us a message directly. We'll get back to you as soon as we can.`,
+        a: `Click ${contactUsLink} and a quick form will pop up. Fill it out and we'll get back to you as soon as we can.`,
       },
       {
         q: "Do you meet year-round?",

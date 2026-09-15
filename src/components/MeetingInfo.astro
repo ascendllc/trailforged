@@ -1,7 +1,7 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
 import Button from "./Button.astro";
-import { FIND_A_TROOP_URL } from "../lib/constants";
+import { CONTACT_FORM_URL } from "../lib/constants";
 
 const address = "34800 21st Ave SW, Federal Way, WA 98023";
 const mapQuery = encodeURIComponent(address);
@@ -26,11 +26,8 @@ const mapQuery = encodeURIComponent(address);
       </p>
 
       <div class="get-in-touch">
-        <p>Thinking about visiting? The best way to get ahold of us first is to reach out.</p>
-        <Button href={FIND_A_TROOP_URL} target="_blank">Contact Us</Button>
-        <p class="get-in-touch-hint">
-          On the page that opens, search &ldquo;Federal Way, WA&rdquo; (or zip 98023) and select <strong>Troop WA-0337</strong> to send us a message.
-        </p>
+        <p>Thinking about visiting? Simply click the button below, fill out the form, and someone will get back to you.</p>
+        <Button href={CONTACT_FORM_URL} target="_blank" data-contact-trigger="true">Contact Us</Button>
       </div>
 
       <a class="cal-link" href="/calendar">See our full schedule &rarr;</a>
@@ -91,12 +88,6 @@ const mapQuery = encodeURIComponent(address);
   .get-in-touch p {
     margin: 0 0 0.85rem;
     font-size: 0.95rem;
-  }
-
-  .get-in-touch-hint {
-    margin: 0.85rem 0 0;
-    font-size: 0.82rem;
-    color: var(--tl-text-muted);
   }
 
   .cal-link {

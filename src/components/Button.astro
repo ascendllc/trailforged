@@ -4,13 +4,14 @@ interface Props {
   variant?: "primary" | "outline";
   class?: string;
   target?: "_blank";
+  [key: `data-${string}`]: string | boolean | undefined;
 }
 
-const { href, variant = "primary", class: className = "", target } = Astro.props;
+const { href, variant = "primary", class: className = "", target, ...rest } = Astro.props;
 const rel = target === "_blank" ? "noopener noreferrer" : undefined;
 ---
 
-<a href={href} class={`btn btn--${variant} ${className}`} target={target} rel={rel}>
+<a href={href} class={`btn btn--${variant} ${className}`} target={target} rel={rel} {...rest}>
   <slot />
 </a>
 
