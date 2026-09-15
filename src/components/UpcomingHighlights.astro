@@ -2,6 +2,7 @@
 import SectionHeading from "./SectionHeading.astro";
 import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
 import fallbackEventsData from "../data/upcomingEvents.json";
+import { MEMBERS_CALENDAR_URL } from "../lib/constants";
 
 const fallbackEvents = fallbackEventsData as TroopEvent[];
 const liveEvents = await getUpcomingHighlights(4);
@@ -64,14 +65,16 @@ function cleanDescription(text: string, max = 160) {
       usingFallback && (
         <p class="feed-note">
           We couldn't load live events just now — check back soon, or see the{" "}
-          <a href="/calendar">full calendar</a> directly.
+          <a href={MEMBERS_CALENDAR_URL} target="_blank" rel="noopener noreferrer">full calendar</a> directly.
         </p>
       )
     }
 
     {
       !usingFallback && (
-        <a class="see-all" href="/calendar">See the full calendar &rarr;</a>
+        <a class="see-all" href={MEMBERS_CALENDAR_URL} target="_blank" rel="noopener noreferrer">
+          Members Can Access Our Full Calendar (Login Required) &rarr;
+        </a>
       )
     }
   </div>

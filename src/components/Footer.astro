@@ -1,6 +1,6 @@
 ---
 import Button from "./Button.astro";
-import { CONTACT_FORM_URL } from "../lib/constants";
+import { CONTACT_FORM_URL, MEMBERS_CALENDAR_URL } from "../lib/constants";
 
 const year = new Date().getFullYear();
 ---
@@ -23,7 +23,7 @@ const year = new Date().getFullYear();
         <li><a href="https://www.traillifeusa.com/" target="_blank" rel="noopener noreferrer">Trail Life USA</a></li>
         <li><a href="https://nwcfoursquare.org/" target="_blank" rel="noopener noreferrer">Northwest Church</a></li>
         <li><a href="/leadership">Leadership</a></li>
-        <li><a href="/calendar">Calendar</a></li>
+        <li><a href={MEMBERS_CALENDAR_URL} target="_blank" rel="noopener noreferrer">Calendar</a></li>
       </ul>
     </div>
 
