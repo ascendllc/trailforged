@@ -40,14 +40,16 @@ function cleanDescription(text: string, max = 160) {
       {
         events.map((event) => (
           <article class="card">
-            {event.image?.url ? (
-              <img class="photo" src={event.image.url} alt={event.image.alt ?? event.title} loading="lazy" />
-            ) : (
-              <div class="photo" style={`background:${CATEGORY_COLORS[event.category] ?? DEFAULT_CATEGORY_COLOR}`}>
-                <span class="category-badge">{event.category}</span>
-                <span class="date-badge">{monthBadge(event.when)}</span>
-              </div>
-            )}
+            <div class="photo-wrap">
+              {event.image?.url ? (
+                <img class="photo" src={event.image.url} alt={event.image.alt ?? event.title} loading="lazy" />
+              ) : (
+                <div class="photo photo--placeholder" style={`background:${CATEGORY_COLORS[event.category] ?? DEFAULT_CATEGORY_COLOR}`}>
+                  <span class="category-badge">{event.category}</span>
+                </div>
+              )}
+              <span class="month-badge">{monthBadge(event.when)}</span>
+            </div>
             <div class="card-body">
               <h3>{event.title}</h3>
               <p class="when-detail">{whenDetail(event.when)}</p>
@@ -91,15 +93,23 @@ function cleanDescription(text: string, max = 160) {
     flex-direction: column;
   }
 
-  .photo {
+  .photo-wrap {
     aspect-ratio: 16 / 9;
     position: relative;
+    overflow: hidden;
+  }
+
+  .photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .photo--placeholder {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
     padding: 0.6rem;
-    object-fit: cover;
-    width: 100%;
   }
 
   .category-badge {
@@ -113,8 +123,10 @@ function cleanDescription(text: string, max = 160) {
     border-radius: 999px;
   }
 
-  .date-badge {
-    align-self: flex-end;
+  .month-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
     background: var(--tl-white);
     color: var(--tl-black);
     font-weight: 700;
@@ -122,6 +134,7 @@ function cleanDescription(text: string, max = 160) {
     text-transform: uppercase;
     padding: 0.3em 0.7em;
     border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(1, 1, 1, 0.25);
   }
 
   .card-body {
