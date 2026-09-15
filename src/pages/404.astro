@@ -1,8 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/Button.astro";
-import trailLifeLogo from "../../assets/brand/TL_InLine_Logo_Tag_RGB.webp";
 ---
 
 <BaseLayout
@@ -11,11 +9,6 @@ import trailLifeLogo from "../../assets/brand/TL_InLine_Logo_Tag_RGB.webp";
 >
   <section class="not-found">
     <div class="container">
-      <div class="brand-mark">
-        <Image src={trailLifeLogo} alt="Trail Life USA" width={220} height={81} />
-        <span class="troop-badge">Troop 337</span>
-      </div>
-
       <p class="kicker">Error 404</p>
       <h1>Looks Like You&rsquo;ve Wandered Off the Trail</h1>
       <p class="lede">
@@ -47,35 +40,14 @@ import trailLifeLogo from "../../assets/brand/TL_InLine_Logo_Tag_RGB.webp";
     max-width: 640px;
   }
 
-  .brand-mark {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .brand-mark img {
-    height: 48px;
-    width: auto;
-  }
-
-  .troop-badge {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--tl-brown);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding-left: 0.85rem;
-    border-left: 2px solid var(--tl-warm-gray);
-  }
-
   .kicker {
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.85rem;
-    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-weight: 800;
     color: var(--tl-red);
-    margin: 0 0 0.75rem;
+    line-height: 1;
+    margin: 0 0 1.25rem;
   }
 
   h1 {
