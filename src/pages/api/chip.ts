@@ -96,10 +96,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const encoder = new TextEncoder();
   const body_ = new ReadableStream({
     async start(controller) {
+      claudeStream.on("text", (delta) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta })}\n\n`));
+      });
+
       try {
-        for await (const text of claudeStream.textStream) {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: text })}\n\n`));
-        }
+        await claudeStream.done();
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       } catch (error) {
         console.error("[chip] Streaming error:", error);
