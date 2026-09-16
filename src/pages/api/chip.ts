@@ -89,6 +89,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           type: "web_search_20260318",
           name: "web_search",
           allowed_domains: ["traillifeusa.com"],
+          allowed_callers: ["direct"],
           max_uses: 3,
         },
       ],
