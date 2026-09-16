@@ -1,4 +1,4 @@
-export const EVENTS_FEED_URL = "https://tl-compass.praesyn.com/feed/troop-events.json";
+export const EVENTS_FEED_URL = "https://compass.trailforged.org/feed/troop-events.json";
 
 export interface TroopEventWhen {
   month: string; // e.g. "September"
