@@ -1,13 +1,14 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
-import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
-import fallbackEventsData from "../data/upcomingEvents.json";
+import type { TroopEvent } from "../lib/events";
 import { MEMBERS_CALENDAR_URL } from "../lib/constants";
 
-const fallbackEvents = fallbackEventsData as TroopEvent[];
-const liveEvents = await getUpcomingHighlights(4);
-const usingFallback = liveEvents.length === 0;
-const events = usingFallback ? fallbackEvents : liveEvents;
+interface Props {
+  events: TroopEvent[];
+  usingFallback: boolean;
+}
+
+const { events, usingFallback } = Astro.props;
 
 const CATEGORY_COLORS: Record<string, string> = {
   Campout: "var(--tl-green)",
@@ -50,6 +51,9 @@ function cleanDescription(text: string, max = 160) {
                 </div>
               )}
               <span class="month-badge">{monthBadge(event.when)}</span>
+              {event.image?.url && event.image?.credit && (
+                <span class="photo-credit">{event.image.credit}</span>
+              )}
             </div>
             <div class="card-body">
               <h3>{event.title}</h3>
@@ -124,6 +128,18 @@ function cleanDescription(text: string, max = 160) {
     letter-spacing: 0.04em;
     padding: 0.3em 0.6em;
     border-radius: 999px;
+  }
+
+  .photo-credit {
+    position: absolute;
+    bottom: 0.35rem;
+    left: 0.5rem;
+    font-size: 0.65rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.55);
+    text-shadow: 0 1px 2px rgba(1, 1, 1, 0.7);
+    letter-spacing: 0.01em;
+    pointer-events: none;
   }
 
   .month-badge {

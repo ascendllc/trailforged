@@ -8,6 +8,13 @@ import UpcomingHighlights from "../components/UpcomingHighlights.astro";
 import ParentEngagement from "../components/ParentEngagement.astro";
 import ContactSection from "../components/ContactSection.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
+import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
+import fallbackEventsData from "../data/upcomingEvents.json";
+
+const fallbackEvents = fallbackEventsData as TroopEvent[];
+const liveEvents = await getUpcomingHighlights(4);
+const usingFallback = liveEvents.length === 0;
+const highlightEvents = usingFallback ? fallbackEvents : liveEvents;
 
 const websiteSchema = {
   "@context": "https://schema.org",
@@ -31,7 +38,7 @@ const websiteSchema = {
   <VisionMissionMotto />
   <WhatIsTrailLife />
   <MeetingInfo />
-  <UpcomingHighlights />
+  <UpcomingHighlights events={highlightEvents} usingFallback={usingFallback} />
   <ParentEngagement />
   <ContactSection />
   <FaqAccordion />

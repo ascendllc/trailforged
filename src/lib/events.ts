@@ -10,6 +10,8 @@ export interface TroopEventWhen {
 export interface TroopEventImage {
   url?: string;
   alt?: string;
+  credit?: string;
+  license?: string;
 }
 
 export interface TroopEvent {
