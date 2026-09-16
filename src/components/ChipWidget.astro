@@ -86,6 +86,10 @@ const WELCOME_MESSAGE =
     }
   });
 
+  function stripMarkdown(text: string) {
+    return text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*\*/g, "");
+  }
+
   function appendMessage(role: "user" | "assistant", text: string) {
     if (!messagesEl) return null;
     const el = document.createElement("div");
@@ -143,7 +147,7 @@ const WELCOME_MESSAGE =
             const parsed = JSON.parse(payload);
             if (parsed.delta) {
               assistantText += parsed.delta;
-              if (assistantEl) assistantEl.textContent = assistantText;
+              if (assistantEl) assistantEl.textContent = stripMarkdown(assistantText);
               if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
             } else if (parsed.error) {
               throw new Error(parsed.error);
