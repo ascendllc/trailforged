@@ -108,10 +108,30 @@ const groups: FaqGroup[] = [
     ],
   },
 ];
+
+function stripHtml(html: string) {
+  return html.replace(/<[^>]+>/g, "");
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: groups.flatMap((group) =>
+    group.items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: stripHtml(item.a),
+      },
+    }))
+  ),
+};
 ---
 
 <section class="section section--white">
   <div class="container narrow">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
     <SectionHeading title="Frequently Asked Questions" />
 
     {

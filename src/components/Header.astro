@@ -15,7 +15,7 @@ const currentPath = Astro.url.pathname;
   <div class="container bar">
     <a href="/" class="brand">
       {/* TODO(Brad): this is the generic national mark — swap for the troop-337-customized version (troop number + URL beneath) once you generate one from the official template. */}
-      <Image src={trailLifeLogo} alt="Trail Life USA" class="brand-logo" width={300} height={111} />
+      <Image src={trailLifeLogo} alt="Trail Life USA" class="brand-logo" width={300} height={111} loading="eager" />
       <span class="brand-troop">Troop 337</span>
     </a>
 

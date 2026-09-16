@@ -12,11 +12,41 @@ import ContactModal from "../components/ContactModal.astro";
 interface Props {
   title: string;
   description: string;
+  image?: string;
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image = "/icon-512.png", noindex = false } = Astro.props;
 const siteName = "Trail Life Troop 337";
 const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(image, Astro.site);
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Trail Life Troop 337",
+  alternateName: "Trail Forged",
+  url: "https://trailforged.org/",
+  logo: "https://trailforged.org/icon-512.png",
+  description:
+    "A Christ-centered, church-based outdoor adventure and character-development program for boys ages 5-17, chartered through Northwest Church in Federal Way, Washington.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "34800 21st Ave SW",
+    addressLocality: "Federal Way",
+    addressRegion: "WA",
+    postalCode: "98023",
+    addressCountry: "US",
+  },
+  areaServed: "Federal Way, WA",
+  parentOrganization: {
+    "@type": "Organization",
+    name: "Trail Life USA",
+    url: "https://www.traillifeusa.com/",
+  },
+  sameAs: ["https://www.traillifeusa.com/"],
+};
 ---
 
 <html lang="en">
@@ -26,11 +56,30 @@ const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+      )
+    }
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={siteName} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Trail Life Troop 337 logo" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -39,6 +88,13 @@ const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#BA262D" />
+
+    <link rel="preconnect" href="https://www.youtube.com" />
+    <link rel="preconnect" href="https://www.google.com" />
+    <link rel="preconnect" href="https://www.traillifeconnect.com" />
+    <link rel="dns-prefetch" href="https://live.staticflickr.com" />
+
+    {!noindex && <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />}
   </head>
   <body>
     <Header />

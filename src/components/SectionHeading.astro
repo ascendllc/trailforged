@@ -4,14 +4,16 @@ interface Props {
   title: string;
   align?: "left" | "center";
   underlineColor?: string;
+  level?: "h1" | "h2";
 }
 
-const { eyebrow, title, align = "center", underlineColor = "var(--tl-red)" } = Astro.props;
+const { eyebrow, title, align = "center", underlineColor = "var(--tl-red)", level = "h2" } = Astro.props;
+const Heading = level;
 ---
 
 <div class={`section-heading section-heading--${align}`}>
   {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-  <h2>{title}</h2>
+  <Heading class="section-heading-title">{title}</Heading>
   <span class="rule" style={`background:${underlineColor}`}></span>
 </div>
 
@@ -33,7 +35,7 @@ const { eyebrow, title, align = "center", underlineColor = "var(--tl-red)" } = A
     margin-bottom: 0.5rem;
   }
 
-  h2 {
+  .section-heading-title {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-size: clamp(1.5rem, 3vw, 2.25rem);

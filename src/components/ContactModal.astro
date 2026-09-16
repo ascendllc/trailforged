@@ -9,9 +9,10 @@ import { CONTACT_FORM_EMBED_URL } from "../lib/constants";
   </div>
   <div class="modal-body">
     <iframe
+      id="contact-modal-iframe"
       style="width: 100%; margin: 0px auto; display: block;"
       xml="lang"
-      src={CONTACT_FORM_EMBED_URL}
+      data-src={CONTACT_FORM_EMBED_URL}
       width="100%"
       height="815"
       frameborder="0"
@@ -26,9 +27,15 @@ import { CONTACT_FORM_EMBED_URL } from "../lib/constants";
 <script>
   const modal = document.getElementById("contact-modal") as HTMLDialogElement | null;
   const closeBtn = modal?.querySelector(".modal-close");
+  const iframe = document.getElementById("contact-modal-iframe") as HTMLIFrameElement | null;
 
   function openModal(event: Event) {
     event.preventDefault();
+    // Defer loading the embedded form until the visitor actually opens the
+    // modal, instead of on every pageview.
+    if (iframe && !iframe.src && iframe.dataset.src) {
+      iframe.src = iframe.dataset.src;
+    }
     modal?.showModal();
   }
 

@@ -5,15 +5,43 @@ import SectionHeading from "../components/SectionHeading.astro";
 import LeadershipCard from "../components/LeadershipCard.astro";
 
 const leaders = (await getCollection("leadership")).sort((a, b) => a.data.order - b.data.order);
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://trailforged.org/" },
+    { "@type": "ListItem", position: 2, name: "Leadership & Structure", item: "https://trailforged.org/leadership/" },
+  ],
+};
+
+const leadershipListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Trail Life Troop 337 Leadership",
+  itemListElement: leaders.map((leader, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "Person",
+      name: leader.data.name,
+      jobTitle: leader.data.role,
+      ...(leader.data.bio ? { description: leader.data.bio } : {}),
+      memberOf: { "@type": "Organization", name: "Trail Life Troop 337", url: "https://trailforged.org/" },
+    },
+  })),
+};
 ---
 
 <BaseLayout
   title="Leadership & Structure"
   description="How Trail Life Troop 337 is organized — Woodlands Trail and Navigators & Adventurers — and who leads each part of the troop."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(leadershipListSchema)} />
   <section class="section section--white">
     <div class="container">
-      <SectionHeading eyebrow="How We're Organized" title="Leadership & Structure" />
+      <SectionHeading eyebrow="How We're Organized" title="Leadership & Structure" level="h1" />
 
       <div class="structure">
         <div class="structure-panel">

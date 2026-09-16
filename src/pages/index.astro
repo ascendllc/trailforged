@@ -8,12 +8,25 @@ import UpcomingHighlights from "../components/UpcomingHighlights.astro";
 import ParentEngagement from "../components/ParentEngagement.astro";
 import ContactSection from "../components/ContactSection.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Trail Forged — Trail Life Troop 337",
+  alternateName: "Trail Life Troop 337",
+  url: "https://trailforged.org/",
+  description:
+    "Official website of Trail Life Troop 337, a Christ-centered outdoor adventure program for boys in Federal Way, WA.",
+  inLanguage: "en-US",
+  publisher: { "@type": "Organization", name: "Trail Life Troop 337", url: "https://trailforged.org/" },
+};
 ---
 
 <BaseLayout
   title="Trail Life Troop 337"
   description="Trail Life Troop 337 is a Christ-centered outdoor adventure program for boys, meeting Mondays at Northwest Church in Federal Way, WA."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   <Hero />
   <VisionMissionMotto />
   <WhatIsTrailLife />
