@@ -7,7 +7,7 @@ export const prerender = false;
 const MODEL = "claude-haiku-4-5-20251001";
 const MAX_HISTORY = 20;
 const MAX_MESSAGE_LENGTH = 2000;
-const MAX_TOKENS = 500;
+const MAX_TOKENS = 1024;
 
 const RATE_LIMIT = 20;
 const RATE_WINDOW_MS = 60_000;
@@ -84,6 +84,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       max_tokens: MAX_TOKENS,
       system: CHIP_SYSTEM_PROMPT,
       messages: trimmedHistory.map((m) => ({ role: m.role, content: m.content })),
+      tools: [
+        {
+          type: "web_search_20260318",
+          name: "web_search",
+          allowed_domains: ["traillifeusa.com"],
+          max_uses: 3,
+        },
+      ],
     });
   } catch (error) {
     console.error("[chip] Failed to start Claude stream:", error);
