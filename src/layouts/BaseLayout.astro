@@ -98,6 +98,7 @@ const organizationSchema = {
     {!noindex && <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />}
   </head>
   <body>
+    <slot name="banner" />
     <Header />
     <main>
       <slot />

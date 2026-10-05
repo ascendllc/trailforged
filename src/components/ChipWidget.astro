@@ -90,6 +90,25 @@ const WELCOME_MESSAGE =
     return text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*\*/g, "");
   }
 
+  function renderText(el: HTMLElement, text: string) {
+    el.textContent = "";
+    const urlPattern = /https?:\/\/[^\s<>"]+/g;
+    let last = 0;
+    for (const match of text.matchAll(urlPattern)) {
+      const start = match.index ?? 0;
+      const url = match[0].replace(/[.,;:!?)]+$/, "");
+      el.append(text.slice(last, start));
+      const a = document.createElement("a");
+      a.href = url;
+      a.textContent = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      el.append(a);
+      last = start + url.length;
+    }
+    el.append(text.slice(last));
+  }
+
   function appendMessage(role: "user" | "assistant", text: string) {
     if (!messagesEl) return null;
     const el = document.createElement("div");
@@ -147,7 +166,7 @@ const WELCOME_MESSAGE =
             const parsed = JSON.parse(payload);
             if (parsed.delta) {
               assistantText += parsed.delta;
-              if (assistantEl) assistantEl.textContent = stripMarkdown(assistantText);
+              if (assistantEl) renderText(assistantEl, stripMarkdown(assistantText));
               if (messagesEl) messagesEl.scrollTop = messagesEl.scrollHeight;
             } else if (parsed.error) {
               throw new Error(parsed.error);
@@ -310,6 +329,11 @@ const WELCOME_MESSAGE =
     border: 1px solid var(--tl-warm-gray);
     color: var(--tl-text);
     border-bottom-left-radius: 4px;
+  }
+
+  :global(.chip-message a) {
+    color: var(--tl-blue);
+    word-break: break-all;
   }
 
   :global(.chip-message--user) {

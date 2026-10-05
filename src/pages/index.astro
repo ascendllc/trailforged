@@ -8,6 +8,8 @@ import UpcomingHighlights from "../components/UpcomingHighlights.astro";
 import ParentEngagement from "../components/ParentEngagement.astro";
 import ContactSection from "../components/ContactSection.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
+import FundraiserStrip from "../components/FundraiserStrip.astro";
+import FundraiserSection from "../components/FundraiserSection.astro";
 import { getUpcomingHighlights, type TroopEvent } from "../lib/events";
 import fallbackEventsData from "../data/upcomingEvents.json";
 
@@ -33,12 +35,14 @@ const websiteSchema = {
   title="Trail Life Troop 337"
   description="Trail Life Troop 337 is a Christ-centered outdoor adventure program for boys, meeting Mondays at Northwest Church in Federal Way, WA."
 >
+  <FundraiserStrip slot="banner" />
   <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   <Hero />
   <VisionMissionMotto />
   <WhatIsTrailLife />
   <MeetingInfo />
   <UpcomingHighlights events={highlightEvents} usingFallback={usingFallback} />
+  <FundraiserSection />
   <ParentEngagement />
   <ContactSection />
   <FaqAccordion />

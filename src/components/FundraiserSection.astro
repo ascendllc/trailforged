@@ -1,0 +1,148 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import Button from "./Button.astro";
+import { FUNDRAISER_URL, FUNDRAISER_END } from "../lib/constants";
+
+const active = new Date() < new Date(FUNDRAISER_END);
+---
+
+{
+  active && (
+    <section id="fundraiser" class="section section--warm fundraiser" data-end={FUNDRAISER_END}>
+      <div class="container">
+        <SectionHeading eyebrow="Support Troop 337" title="Christmas Wreath & Poinsettia Fundraiser" />
+
+        <div class="layout">
+          <div class="copy">
+            <p>
+              Every wreath, poinsettia, garland, and door swag you purchase directly equips Troop 337 to build
+              young men of good character who are ready for adventure, leadership, and a walk with Jesus. Our
+              annual fundraiser kicks off <strong>October 7</strong>, and it helps make sure every Trailman can
+              take part in the outings and activities that strengthen faith, friendships, and leadership.
+            </p>
+            <p>
+              The top three sellers will earn prizes, and every Trailman will be celebrated with a party at the end.
+            </p>
+            <div class="actions">
+              <Button href={FUNDRAISER_URL} target="_blank">Shop the Fundraiser</Button>
+              <Button href={FUNDRAISER_URL} target="_blank" variant="outline">Make a Donation</Button>
+            </div>
+          </div>
+
+          <div class="widget-wrap">
+            <link rel="stylesheet" href="https://go.rallyup.com/Content/widgets/campaign-fundraising-widget.css" />
+            <div
+              class="fundraising-embeddable-widget"
+              data-url="https://go.rallyup.com/campaigns/getcampaignstatus/b53878"
+              data-permanenturl="b53878"
+              style="display: none; background-color: rgb(255, 255, 255); border-color: rgb(33, 150, 243);"
+              data-initialized="false"
+            >
+              <div class="fundraising-embeddable-widget-img-container">
+                <img
+                  src="https://d2jjj41xkpuaip.cloudfront.net/246x164/RallyUpProduction/a15864ea76534e8a7de245eecae30b19.png"
+                  alt="Trail Life Christmas fundraiser"
+                  loading="lazy"
+                />
+              </div>
+              <div class="fundraising-embeddable-widget-headline" style="color: rgb(33, 150, 243);" />
+              <div class="fundraising-embeddable-widget-body" style="color: rgb(142, 142, 142);" />
+              <div class="fundraising-embeddable-widget-more-info">
+                <a href={FUNDRAISER_URL} style="color: rgb(33, 150, 243);" target="_blank" rel="noopener noreferrer">
+                  More Info
+                </a>
+              </div>
+              <div class="fundraising-embeddable-widget-progress-container">
+                <div class="fundraising-embeddable-widget-progress-bar" style="display: none;">
+                  <div class="fundraising-embeddable-widget-progress-bar-bar" style="background-color: rgb(139, 195, 74); width: 0%;" />
+                </div>
+                <div class="fundraising-embeddable-widget-raized" style="display: none;">0% raised of $10,000 Goal</div>
+              </div>
+              <div class="fundraising-embeddable-widget-contribute-button-container">
+                <a
+                  href={FUNDRAISER_URL}
+                  class="fundraising-embeddable-widget-contribute-button"
+                  style="text-decoration: none; background-color: rgb(139, 195, 74); border-color: rgb(125, 176, 67);"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Purchase
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script is:inline src="https://go.rallyup.com/Scripts/widgets/campaign-fundraising-widget.js" defer></script>
+
+<script>
+  const section = document.querySelector<HTMLElement>(".fundraiser");
+  if (section && Date.now() >= new Date(section.dataset.end ?? "").getTime()) {
+    section.hidden = true;
+  }
+</script>
+
+<style>
+  .fundraiser {
+    scroll-margin-top: 5rem;
+  }
+
+  .fundraiser[hidden] {
+    display: none;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget) {
+    background-color: var(--tl-white) !important;
+    border-color: var(--tl-red) !important;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    box-shadow: var(--shadow-card);
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget-headline),
+  .widget-wrap :global(.fundraising-embeddable-widget-more-info a) {
+    color: var(--tl-red) !important;
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget-body) {
+    color: var(--tl-text-muted) !important;
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget-progress-bar-bar) {
+    background-color: var(--tl-green) !important;
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget-contribute-button) {
+    background-color: var(--tl-red) !important;
+    border-color: var(--tl-red-dark) !important;
+    color: var(--tl-white) !important;
+  }
+
+  .widget-wrap :global(.fundraising-embeddable-widget-contribute-button:hover) {
+    background-color: var(--tl-red-dark) !important;
+  }
+
+  @media (max-width: 800px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

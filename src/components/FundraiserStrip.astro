@@ -1,0 +1,70 @@
+---
+import { FUNDRAISER_START, FUNDRAISER_END } from "../lib/constants";
+
+const active = new Date() < new Date(FUNDRAISER_END);
+---
+
+{
+  active && (
+    <div class="fundraiser-strip" data-start={FUNDRAISER_START} data-end={FUNDRAISER_END}>
+      <div class="container strip-inner">
+        <p>
+          <strong>Annual Wreath &amp; Poinsettia Fundraiser</strong>{" "}
+          <span class="when" data-when="pre">kicks off October 7</span>
+          <span class="when" data-when="live" hidden>is underway</span>{" "}
+          &mdash; <a href="/#fundraiser">Support Troop 337 &rarr;</a>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const strip = document.querySelector<HTMLElement>(".fundraiser-strip");
+  if (strip) {
+    const now = Date.now();
+    if (now >= new Date(strip.dataset.end ?? "").getTime()) {
+      strip.hidden = true;
+    } else if (now >= new Date(strip.dataset.start ?? "").getTime()) {
+      strip.querySelector<HTMLElement>('[data-when="pre"]')?.setAttribute("hidden", "");
+      strip.querySelector<HTMLElement>('[data-when="live"]')?.removeAttribute("hidden");
+    }
+  }
+</script>
+
+<style>
+  .fundraiser-strip {
+    background: var(--tl-red-dark);
+    color: var(--tl-white);
+    font-size: 0.9rem;
+  }
+
+  .fundraiser-strip[hidden] {
+    display: none;
+  }
+
+  .strip-inner {
+    padding-block: 0.55rem;
+    text-align: center;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: var(--tl-white);
+    font-weight: 700;
+    text-decoration-color: var(--tl-orange);
+    text-decoration-thickness: 2px;
+    white-space: nowrap;
+  }
+
+  a:hover {
+    color: var(--tl-orange);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--tl-orange);
+  }
+</style>
