@@ -1,6 +1,13 @@
 ---
+import { Image } from "astro:assets";
+
+const photos = import.meta.glob<{ default: ImageMetadata }>("../../assets/leadership/*.{jpg,jpeg,png,webp}", {
+  eager: true,
+});
+
 interface Props {
   name: string;
+  photo?: string;
   role: string;
   bio?: string;
   email?: string;
@@ -8,7 +15,8 @@ interface Props {
   anchorId?: string;
 }
 
-const { name, role, bio, email, contactLink, anchorId } = Astro.props;
+const { name, role, photo, bio, email, contactLink, anchorId } = Astro.props;
+const photoSrc = photo ? photos[`../../assets/leadership/${photo}`]?.default : undefined;
 const link = contactLink ?? (email ? `mailto:${email}` : undefined);
 const isPlaceholder = name.includes("TBD");
 ---
@@ -16,7 +24,9 @@ const isPlaceholder = name.includes("TBD");
 <div class="leader-card" id={anchorId}>
   <div class="avatar" aria-hidden="true">
     {
-      isPlaceholder ? (
+      photoSrc ? (
+        <Image src={photoSrc} alt="" class="avatar-photo" width={144} height={144} />
+      ) : isPlaceholder ? (
         <span class="avatar-initials">?</span>
       ) : (
         <span class="avatar-initials">
@@ -53,12 +63,19 @@ const isPlaceholder = name.includes("TBD");
 
   .avatar {
     flex-shrink: 0;
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     background: var(--tl-warm-gray);
     display: grid;
     place-items: center;
+    overflow: hidden;
+  }
+
+  .avatar-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .avatar-initials {
