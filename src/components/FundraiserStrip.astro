@@ -34,8 +34,8 @@ const active = new Date() < new Date(FUNDRAISER_END);
 
 <style>
   .fundraiser-strip {
-    background: var(--tl-red-dark);
-    color: var(--tl-white);
+    background: var(--tl-orange);
+    color: var(--tl-black);
     font-size: 0.9rem;
   }
 
@@ -53,18 +53,18 @@ const active = new Date() < new Date(FUNDRAISER_END);
   }
 
   a {
-    color: var(--tl-white);
+    color: var(--tl-black);
     font-weight: 700;
-    text-decoration-color: var(--tl-orange);
+    text-decoration-color: currentColor;
     text-decoration-thickness: 2px;
     white-space: nowrap;
   }
 
   a:hover {
-    color: var(--tl-orange);
+    color: var(--tl-red-dark);
   }
 
   a:focus-visible {
-    outline: 2px solid var(--tl-orange);
+    outline: 2px solid var(--tl-black);
   }
 </style>
