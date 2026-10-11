@@ -13,10 +13,7 @@ import SectionHeading from "../components/SectionHeading.astro";
     <div class="container narrow">
       <SectionHeading eyebrow="Troop 337 Photos" title="Share Your Photos" level="h1" />
 
-      <p class="intro">
-        Got photos from a meeting, hike, or campout? Add them here and they'll show up in our{" "}
-        <a href="/photos">photo gallery</a>, organized by year and month.
-      </p>
+      <p class="intro">Got photos from a meeting, hike, or campout? Share them with Trail Life Troop 337 leadership here.</p>
 
       <form id="upload-form" class="upload-form" novalidate>
         <div class="field">
@@ -34,10 +31,10 @@ import SectionHeading from "../components/SectionHeading.astro";
         </div>
 
         <label class="consent">
-          <input type="checkbox" id="consent" name="consent" />
+          <input type="checkbox" id="consent" name="consent" checked />
           <span>
-            I have permission to share these photos, and a parent or guardian has agreed to any boys
-            appearing in them. I understand the photos will be visible to anyone with the link to our gallery.
+            I have permission to upload these photos. I understand the photos will be made available to Trail Life
+            Troop 337 leadership.
           </span>
         </label>
 
@@ -51,7 +48,6 @@ import SectionHeading from "../components/SectionHeading.astro";
         <p id="result-body"></p>
         <ul id="result-failures" class="failures" hidden></ul>
         <div class="result-actions">
-          <a id="result-gallery" class="result-link" href="/photos">View the photo gallery &rarr;</a>
           <button type="button" id="upload-more" class="again-btn">Upload more photos</button>
         </div>
       </div>
@@ -83,7 +79,6 @@ import SectionHeading from "../components/SectionHeading.astro";
   const resultTitle = document.getElementById("result-title") as HTMLHeadingElement;
   const resultBody = document.getElementById("result-body") as HTMLParagraphElement;
   const resultFailures = document.getElementById("result-failures") as HTMLUListElement;
-  const resultGallery = document.getElementById("result-gallery") as HTMLAnchorElement;
   const uploadMore = document.getElementById("upload-more") as HTMLButtonElement;
   const trap = form.querySelector<HTMLInputElement>('input[name="website"]')!;
 
@@ -243,21 +238,15 @@ import SectionHeading from "../components/SectionHeading.astro";
     submitBtn.textContent = "Upload photos";
 
     if (uploaded > 0) {
-      const now = new Date();
-      const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit" }).formatToParts(now);
-      const y = parts.find((p) => p.type === "year")?.value;
-      const m = parts.find((p) => p.type === "month")?.value;
-      resultGallery.href = y && m ? `/photos/${y}/${m}` : "/photos";
       resultTitle.textContent = "Thank you!";
       resultBody.textContent =
         uploaded === 1
-          ? "Your photo was uploaded successfully and is now in the Troop 337 gallery."
-          : `All ${uploaded} of your photos were uploaded successfully and are now in the Troop 337 gallery.`;
+          ? "Your photo was uploaded successfully and has been shared with Trail Life Troop 337 leadership."
+          : `All ${uploaded} of your photos were uploaded successfully and have been shared with Trail Life Troop 337 leadership.`;
       if (failures.length > 0) {
-        resultBody.textContent = `${uploaded} of ${total} photos were uploaded successfully and are now in the Troop 337 gallery. The rest didn't go through:`;
+        resultBody.textContent = `${uploaded} of ${total} photos were uploaded successfully and have been shared with Trail Life Troop 337 leadership. The rest didn't go through:`;
       }
     } else {
-      resultGallery.href = "/photos";
       resultTitle.textContent = "Sorry, that didn't work";
       resultBody.textContent = "None of your photos could be uploaded:";
     }
@@ -269,7 +258,6 @@ import SectionHeading from "../components/SectionHeading.astro";
       resultFailures.append(li);
     }
     resultFailures.hidden = failures.length === 0;
-    resultGallery.hidden = uploaded === 0;
 
     files = files.filter((file) => failures.some((f) => f.name === file.name));
     refresh();
@@ -280,7 +268,7 @@ import SectionHeading from "../components/SectionHeading.astro";
 
   uploadMore.addEventListener("click", () => {
     files = [];
-    consent.checked = false;
+    consent.checked = true;
     result.hidden = true;
     form.hidden = false;
     refresh();
@@ -472,10 +460,6 @@ import SectionHeading from "../components/SectionHeading.astro";
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
-  }
-
-  .result-link {
-    font-weight: 700;
   }
 
   .again-btn {

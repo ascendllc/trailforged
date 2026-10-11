@@ -8,7 +8,6 @@ import { listPhotos, groupCounts } from "../../lib/photos";
 export const prerender = false;
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
-Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
 
 let loadFailed = false;
 let folders: { href: string; label: string; count: number; cover: string }[] = [];

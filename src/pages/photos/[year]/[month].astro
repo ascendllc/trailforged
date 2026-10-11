@@ -10,7 +10,6 @@ const { year = "", month = "" } = Astro.params;
 if (!isValidYear(year) || !isValidMonth(month)) return notFoundResponse(Astro.url);
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
-Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
 
 const page = Math.max(1, Number.parseInt(Astro.url.searchParams.get("page") ?? "1", 10) || 1);
 

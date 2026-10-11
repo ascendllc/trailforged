@@ -137,13 +137,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   try {
     await put(thumbPath, thumb, {
-      access: "public",
+      access: "private",
       contentType: "image/jpeg",
       addRandomSuffix: false,
       allowOverwrite: true,
     });
     await put(fullPath, full, {
-      access: "public",
+      access: "private",
       contentType: "image/jpeg",
       addRandomSuffix: false,
       allowOverwrite: false,

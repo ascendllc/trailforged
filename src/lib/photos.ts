@@ -64,8 +64,8 @@ export async function listPhotos(folder = ""): Promise<Photo[]> {
       if (!match) continue;
       photos.push({
         pathname: blob.pathname,
-        url: blob.url,
-        thumbUrl: blob.url.replace(`/${PHOTO_PREFIX}`, `/${THUMB_PREFIX}`),
+        url: `/photos/file/${blob.pathname}`,
+        thumbUrl: `/photos/file/${blob.pathname.replace(PHOTO_PREFIX, THUMB_PREFIX)}`,
         uploadedAt: blob.uploadedAt,
         year: match[1],
         month: match[2],
