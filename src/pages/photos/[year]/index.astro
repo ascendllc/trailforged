@@ -3,12 +3,12 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 import SectionHeading from "../../../components/SectionHeading.astro";
 import PhotoFolders from "../../../components/PhotoFolders.astro";
 import Button from "../../../components/Button.astro";
-import { listPhotos, groupCounts, isValidYear, monthName } from "../../../lib/photos";
+import { notFoundResponse, listPhotos, groupCounts, isValidYear, monthName } from "../../../lib/photos";
 
 export const prerender = false;
 
 const { year = "" } = Astro.params;
-if (!isValidYear(year)) return Astro.rewrite("/404");
+if (!isValidYear(year)) return notFoundResponse(Astro.url);
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
 Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
@@ -32,14 +32,14 @@ try {
   loadFailed = true;
 }
 
-if (!loadFailed && folders.length === 0) return Astro.rewrite("/404");
+if (!loadFailed && folders.length === 0) return notFoundResponse(Astro.url);
 ---
 
 <BaseLayout title={`${year} Photos`} description={`Troop 337 photos from ${year}.`} noindex>
   <section class="section section--white">
     <div class="container">
       <nav class="crumbs" aria-label="Breadcrumb">
-        <a href="/photos">Photos</a> <span aria-hidden="true">/</span> <span aria-current="page">{year}</span>
+        <a href="/photos">Photos</a>{" "}<span aria-hidden="true">/</span>{" "}<span aria-current="page">{year}</span>
       </nav>
 
       <SectionHeading eyebrow="Photo Gallery" title={year} level="h1" />

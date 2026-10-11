@@ -2,12 +2,12 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import SectionHeading from "../../../components/SectionHeading.astro";
 import Button from "../../../components/Button.astro";
-import { listPhotos, isValidYear, isValidMonth, monthName, PHOTOS_PER_PAGE } from "../../../lib/photos";
+import { notFoundResponse, listPhotos, isValidYear, isValidMonth, monthName, PHOTOS_PER_PAGE } from "../../../lib/photos";
 
 export const prerender = false;
 
 const { year = "", month = "" } = Astro.params;
-if (!isValidYear(year) || !isValidMonth(month)) return Astro.rewrite("/404");
+if (!isValidYear(year) || !isValidMonth(month)) return notFoundResponse(Astro.url);
 
 Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
 Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
@@ -24,7 +24,7 @@ try {
   loadFailed = true;
 }
 
-if (!loadFailed && all.length === 0) return Astro.rewrite("/404");
+if (!loadFailed && all.length === 0) return notFoundResponse(Astro.url);
 
 const totalPages = Math.max(1, Math.ceil(all.length / PHOTOS_PER_PAGE));
 const photos = all.slice((page - 1) * PHOTOS_PER_PAGE, page * PHOTOS_PER_PAGE);
@@ -36,8 +36,7 @@ const base = `/photos/${year}/${month}`;
   <section class="section section--white">
     <div class="container">
       <nav class="crumbs" aria-label="Breadcrumb">
-        <a href="/photos">Photos</a> <span aria-hidden="true">/</span> <a href={`/photos/${year}`}>{year}</a>
-        <span aria-hidden="true">/</span> <span aria-current="page">{monthName(month)}</span>
+        <a href="/photos">Photos</a>{" "}<span aria-hidden="true">/</span>{" "}<a href={`/photos/${year}`}>{year}</a>{" "}<span aria-hidden="true">/</span>{" "}<span aria-current="page">{monthName(month)}</span>
       </nav>
 
       <SectionHeading eyebrow="Photo Gallery" title={label} level="h1" />

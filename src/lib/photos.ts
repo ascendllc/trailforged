@@ -88,3 +88,15 @@ export function groupCounts<T extends string>(photos: Photo[], key: (p: Photo) =
   }
   return counts;
 }
+
+/** Serves the site's 404 page with a real 404 status (rewrites to prerendered routes fail on Vercel). */
+export async function notFoundResponse(origin: URL) {
+  let body = "Not found";
+  try {
+    const res = await fetch(new URL("/404", origin));
+    if (res.ok || res.status === 404) body = await res.text();
+  } catch {
+    // fall back to plain text
+  }
+  return new Response(body, { status: 404, headers: { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex" } });
+}
