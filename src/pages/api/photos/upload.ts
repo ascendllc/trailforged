@@ -95,7 +95,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ error: "Access denied." }, 403);
   }
   if (form.get("consent") !== "yes") {
-    return json({ error: "Please confirm you have permission to share these photos." }, 400);
+    return json({ error: "Please confirm you personally took these photos." }, 400);
   }
 
   const file = form.get("photo");

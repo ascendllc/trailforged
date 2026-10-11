@@ -33,7 +33,7 @@ import SectionHeading from "../components/SectionHeading.astro";
         <label class="consent">
           <input type="checkbox" id="consent" name="consent" checked />
           <span>
-            I have permission to upload these photos. I understand the photos will be made available to Trail Life
+            I personally took these photos. I understand the photos will be made available to Trail Life
             Troop 337 leadership.
           </span>
         </label>
@@ -215,7 +215,7 @@ import SectionHeading from "../components/SectionHeading.astro";
     event.preventDefault();
     if (busy || files.length === 0) return;
     if (!consent.checked) {
-      showError("Please check the box to confirm you have permission to share these photos.");
+      showError("Please check the box to confirm you personally took these photos.");
       consent.focus();
       return;
     }
