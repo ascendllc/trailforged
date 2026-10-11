@@ -1,0 +1,496 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+
+---
+
+<BaseLayout
+  title="Share Your Photos"
+  description="Share photos from Troop 337 outings and meetings."
+  noindex
+>
+  <section class="section section--white">
+    <div class="container narrow">
+      <SectionHeading eyebrow="Troop 337 Photos" title="Share Your Photos" level="h1" />
+
+      <p class="intro">
+        Got photos from a meeting, hike, or campout? Add them here and they'll show up in our{" "}
+        <a href="/photos">photo gallery</a>, organized by year and month.
+      </p>
+
+      <form id="upload-form" class="upload-form" novalidate>
+        <div class="field">
+          <label class="file-drop" for="photo-input" id="file-drop">
+            <span class="file-drop-title">Choose photos</span>
+            <span class="file-drop-hint">or drag them here &middot; JPG, PNG, or WebP &middot; up to 10 at a time</span>
+          </label>
+          <input id="photo-input" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple />
+        </div>
+
+        <ul id="file-list" class="file-list" aria-live="polite"></ul>
+
+        <div class="trap" aria-hidden="true">
+          <label>Leave this field empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" id="consent" name="consent" />
+          <span>
+            I have permission to share these photos, and a parent or guardian has agreed to any boys
+            appearing in them. I understand the photos will be visible to anyone with the link to our gallery.
+          </span>
+        </label>
+
+        <p id="form-error" class="form-error" role="alert" hidden></p>
+
+        <button type="submit" id="submit-btn" class="submit-btn" disabled>Upload photos</button>
+      </form>
+
+      <div id="result" class="result" role="status" tabindex="-1" hidden>
+        <h2 id="result-title"></h2>
+        <p id="result-body"></p>
+        <ul id="result-failures" class="failures" hidden></ul>
+        <div class="result-actions">
+          <a id="result-gallery" class="result-link" href="/photos">View the photo gallery &rarr;</a>
+          <button type="button" id="upload-more" class="again-btn">Upload more photos</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { initBotId } from "botid/client/core";
+
+  // The BotID challenge script is only served on Vercel, so skip it on the local dev server.
+  if (!import.meta.env.DEV) {
+    initBotId({ protect: [{ path: "/api/photos/upload", method: "POST" }] });
+  }
+
+  const MAX_FILES = 10;
+  const MAX_RAW_BYTES = 40 * 1024 * 1024;
+  const MAX_EDGE = 2000;
+  const MAX_UPLOAD_BYTES = 3.8 * 1024 * 1024;
+
+  const form = document.getElementById("upload-form") as HTMLFormElement;
+  const input = document.getElementById("photo-input") as HTMLInputElement;
+  const drop = document.getElementById("file-drop") as HTMLLabelElement;
+  const list = document.getElementById("file-list") as HTMLUListElement;
+  const consent = document.getElementById("consent") as HTMLInputElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  const errorEl = document.getElementById("form-error") as HTMLParagraphElement;
+  const result = document.getElementById("result") as HTMLDivElement;
+  const resultTitle = document.getElementById("result-title") as HTMLHeadingElement;
+  const resultBody = document.getElementById("result-body") as HTMLParagraphElement;
+  const resultFailures = document.getElementById("result-failures") as HTMLUListElement;
+  const resultGallery = document.getElementById("result-gallery") as HTMLAnchorElement;
+  const uploadMore = document.getElementById("upload-more") as HTMLButtonElement;
+  const trap = form.querySelector<HTMLInputElement>('input[name="website"]')!;
+
+  let files: File[] = [];
+  let busy = false;
+
+  function showError(message: string) {
+    errorEl.textContent = message;
+    errorEl.hidden = !message;
+  }
+
+  function refresh() {
+    list.textContent = "";
+    for (const [index, file] of files.entries()) {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.textContent = file.name;
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "Remove";
+      remove.setAttribute("aria-label", `Remove ${file.name}`);
+      remove.addEventListener("click", () => {
+        files.splice(index, 1);
+        refresh();
+      });
+      li.append(name, remove);
+      list.append(li);
+    }
+    submitBtn.disabled = busy || files.length === 0;
+  }
+
+  function addFiles(incoming: FileList | File[]) {
+    showError("");
+    for (const file of Array.from(incoming)) {
+      if (!file.type.startsWith("image/") && !/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name)) {
+        showError(`"${file.name}" isn't a photo, so it was skipped.`);
+        continue;
+      }
+      if (file.size > MAX_RAW_BYTES) {
+        showError(`"${file.name}" is too large (limit 40 MB), so it was skipped.`);
+        continue;
+      }
+      if (files.length >= MAX_FILES) {
+        showError(`You can upload up to ${MAX_FILES} photos at a time.`);
+        break;
+      }
+      files.push(file);
+    }
+    refresh();
+  }
+
+  input.addEventListener("change", () => {
+    if (input.files) addFiles(input.files);
+    input.value = "";
+  });
+
+  for (const type of ["dragenter", "dragover"]) {
+    drop.addEventListener(type, (event) => {
+      event.preventDefault();
+      drop.classList.add("is-dragging");
+    });
+  }
+  for (const type of ["dragleave", "drop"]) {
+    drop.addEventListener(type, () => drop.classList.remove("is-dragging"));
+  }
+  drop.addEventListener("drop", (event) => {
+    event.preventDefault();
+    if (event.dataTransfer?.files) addFiles(event.dataTransfer.files);
+  });
+
+  function loadImage(file: File) {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("unreadable"));
+      };
+      img.src = url;
+    });
+  }
+
+  // Resizing in the browser keeps uploads small and drops EXIF data (including GPS location).
+  async function prepare(file: File): Promise<Blob> {
+    const img = await loadImage(file);
+    const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("unreadable");
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    for (const quality of [0.85, 0.75, 0.6, 0.45]) {
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+      if (blob && blob.size <= MAX_UPLOAD_BYTES) return blob;
+    }
+    throw new Error("too-large");
+  }
+
+  async function uploadOne(file: File): Promise<string | null> {
+    let blob: Blob;
+    try {
+      blob = await prepare(file);
+    } catch (error) {
+      return (error as Error).message === "too-large"
+        ? "This photo is too large to upload."
+        : "We couldn't read this photo. Try saving it as a JPG or PNG.";
+    }
+
+    const body = new FormData();
+    body.append("photo", blob, "photo.jpg");
+    body.append("consent", "yes");
+    body.append("website", trap.value);
+
+    try {
+      const res = await fetch("/api/photos/upload", { method: "POST", body });
+      if (res.ok) return null;
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 403) return "We couldn't verify this upload came from a person. Please refresh and try again.";
+      return data.error ?? "The upload failed. Please try again.";
+    } catch {
+      return "The connection dropped. Please try again.";
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (busy || files.length === 0) return;
+    if (!consent.checked) {
+      showError("Please check the box to confirm you have permission to share these photos.");
+      consent.focus();
+      return;
+    }
+
+    showError("");
+    busy = true;
+    submitBtn.disabled = true;
+    const total = files.length;
+    const failures: { name: string; reason: string }[] = [];
+    let uploaded = 0;
+
+    for (const [index, file] of files.entries()) {
+      submitBtn.textContent = `Uploading ${index + 1} of ${total}…`;
+      const failure = await uploadOne(file);
+      if (failure) failures.push({ name: file.name, reason: failure });
+      else uploaded += 1;
+    }
+
+    busy = false;
+    submitBtn.textContent = "Upload photos";
+
+    if (uploaded > 0) {
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit" }).formatToParts(now);
+      const y = parts.find((p) => p.type === "year")?.value;
+      const m = parts.find((p) => p.type === "month")?.value;
+      resultGallery.href = y && m ? `/photos/${y}/${m}` : "/photos";
+      resultTitle.textContent = "Thank you!";
+      resultBody.textContent =
+        uploaded === 1
+          ? "Your photo was uploaded successfully and is now in the Troop 337 gallery."
+          : `All ${uploaded} of your photos were uploaded successfully and are now in the Troop 337 gallery.`;
+      if (failures.length > 0) {
+        resultBody.textContent = `${uploaded} of ${total} photos were uploaded successfully and are now in the Troop 337 gallery. The rest didn't go through:`;
+      }
+    } else {
+      resultGallery.href = "/photos";
+      resultTitle.textContent = "Sorry, that didn't work";
+      resultBody.textContent = "None of your photos could be uploaded:";
+    }
+
+    resultFailures.textContent = "";
+    for (const failure of failures) {
+      const li = document.createElement("li");
+      li.textContent = `${failure.name} — ${failure.reason}`;
+      resultFailures.append(li);
+    }
+    resultFailures.hidden = failures.length === 0;
+    resultGallery.hidden = uploaded === 0;
+
+    files = files.filter((file) => failures.some((f) => f.name === file.name));
+    refresh();
+    form.hidden = uploaded > 0;
+    result.hidden = false;
+    result.focus();
+  });
+
+  uploadMore.addEventListener("click", () => {
+    files = [];
+    consent.checked = false;
+    result.hidden = true;
+    form.hidden = false;
+    refresh();
+    showError("");
+  });
+
+  refresh();
+</script>
+
+<style>
+  .narrow {
+    max-width: 720px;
+  }
+
+  .intro {
+    text-align: center;
+    color: var(--tl-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .upload-form[hidden],
+  .result[hidden] {
+    display: none;
+  }
+
+  input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .file-drop {
+    display: block;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border: 2px dashed var(--tl-brown);
+    border-radius: var(--radius);
+    background: var(--tl-warm-gray);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .file-drop:hover,
+  .file-drop.is-dragging {
+    background: var(--tl-off-white);
+    border-color: var(--tl-red);
+  }
+
+  .field:focus-within .file-drop {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 2px;
+  }
+
+  .file-drop-title {
+    display: block;
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--tl-red);
+    margin-bottom: 0.25rem;
+  }
+
+  .file-drop-hint {
+    font-size: 0.9rem;
+    color: var(--tl-text-muted);
+  }
+
+  .file-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .file-list :global(li) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--tl-white);
+    border: 1px solid var(--tl-warm-gray);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+  }
+
+  .file-list :global(li span) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-list :global(button) {
+    background: none;
+    border: none;
+    color: var(--tl-red);
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .consent {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin: 1.5rem 0 1rem;
+    font-size: 0.9rem;
+    color: var(--tl-text-muted);
+  }
+
+  .consent input {
+    margin-top: 0.25rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--tl-red);
+    flex-shrink: 0;
+  }
+
+  .form-error {
+    color: var(--tl-red-dark);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+  }
+
+  .submit-btn {
+    display: block;
+    width: 100%;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85em 1.75em;
+    border-radius: var(--radius);
+    border: 2px solid var(--tl-red);
+    background: var(--tl-red);
+    color: var(--tl-white);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    background: var(--tl-red-dark);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .result {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: var(--tl-warm-gray);
+    border-radius: var(--radius);
+    border-top: 4px solid var(--tl-green);
+  }
+
+  .result:focus {
+    outline: none;
+  }
+
+  .result h2 {
+    color: var(--tl-green);
+    margin-bottom: 0.5rem;
+  }
+
+  .failures {
+    text-align: left;
+    max-width: 32rem;
+    margin: 0 auto 1rem;
+    color: var(--tl-red-dark);
+    font-size: 0.9rem;
+  }
+
+  .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .result-link {
+    font-weight: 700;
+  }
+
+  .again-btn {
+    font-family: var(--font-body);
+    font-weight: 700;
+    padding: 0.6em 1.25em;
+    border-radius: var(--radius);
+    border: 2px solid var(--tl-red);
+    background: transparent;
+    color: var(--tl-red);
+    cursor: pointer;
+  }
+
+  .again-btn:hover {
+    background: var(--tl-red);
+    color: var(--tl-white);
+  }
+</style>

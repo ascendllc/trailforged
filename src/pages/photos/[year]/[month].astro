@@ -1,0 +1,245 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import SectionHeading from "../../../components/SectionHeading.astro";
+import Button from "../../../components/Button.astro";
+import { listPhotos, isValidYear, isValidMonth, monthName, PHOTOS_PER_PAGE } from "../../../lib/photos";
+
+export const prerender = false;
+
+const { year = "", month = "" } = Astro.params;
+if (!isValidYear(year) || !isValidMonth(month)) return Astro.rewrite("/404");
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+
+const page = Math.max(1, Number.parseInt(Astro.url.searchParams.get("page") ?? "1", 10) || 1);
+
+let loadFailed = false;
+let all: Awaited<ReturnType<typeof listPhotos>> = [];
+
+try {
+  all = await listPhotos(`${year}/${month}/`);
+} catch (error) {
+  console.error("[photos] could not list photos:", error);
+  loadFailed = true;
+}
+
+if (!loadFailed && all.length === 0) return Astro.rewrite("/404");
+
+const totalPages = Math.max(1, Math.ceil(all.length / PHOTOS_PER_PAGE));
+const photos = all.slice((page - 1) * PHOTOS_PER_PAGE, page * PHOTOS_PER_PAGE);
+const label = `${monthName(month)} ${year}`;
+const base = `/photos/${year}/${month}`;
+---
+
+<BaseLayout title={`${label} Photos`} description={`Troop 337 photos from ${label}.`} noindex>
+  <section class="section section--white">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/photos">Photos</a> <span aria-hidden="true">/</span> <a href={`/photos/${year}`}>{year}</a>
+        <span aria-hidden="true">/</span> <span aria-current="page">{monthName(month)}</span>
+      </nav>
+
+      <SectionHeading eyebrow="Photo Gallery" title={label} level="h1" />
+
+      {loadFailed && <p class="empty">We couldn't load these photos just now. Please try again in a moment.</p>}
+
+      <ul class="grid" id="photo-grid">
+        {
+          photos.map((photo, index) => (
+            <li>
+              <button type="button" class="thumb" data-full={photo.url} data-index={index} aria-label={`View photo ${index + 1} larger`}>
+                <img src={photo.thumbUrl} alt={`Troop 337 photo ${index + 1} from ${label}`} loading="lazy" width="480" height="360" />
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      {
+        totalPages > 1 && (
+          <nav class="pager" aria-label="Pages">
+            {page > 1 ? <a href={`${base}?page=${page - 1}`}>&larr; Newer</a> : <span />}
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            {page < totalPages ? <a href={`${base}?page=${page + 1}`}>Older &rarr;</a> : <span />}
+          </nav>
+        )
+      }
+
+      <div class="cta">
+        <Button href="/upload">Upload photos</Button>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Photo viewer">
+    <button type="button" class="lb-close" aria-label="Close">&times;</button>
+    <button type="button" class="lb-nav lb-prev" aria-label="Previous photo">&lsaquo;</button>
+    <img id="lb-img" alt="" />
+    <button type="button" class="lb-nav lb-next" aria-label="Next photo">&rsaquo;</button>
+  </dialog>
+</BaseLayout>
+
+<script>
+  const thumbs = Array.from(document.querySelectorAll<HTMLButtonElement>(".thumb"));
+  const box = document.getElementById("lightbox") as HTMLDialogElement;
+  const img = document.getElementById("lb-img") as HTMLImageElement;
+  let current = 0;
+
+  function show(index: number) {
+    current = (index + thumbs.length) % thumbs.length;
+    img.src = thumbs[current].dataset.full ?? "";
+    img.alt = thumbs[current].querySelector("img")?.alt ?? "";
+  }
+
+  thumbs.forEach((thumb, index) =>
+    thumb.addEventListener("click", () => {
+      show(index);
+      box.showModal();
+    })
+  );
+
+  box.querySelector(".lb-close")?.addEventListener("click", () => box.close());
+  box.querySelector(".lb-prev")?.addEventListener("click", () => show(current - 1));
+  box.querySelector(".lb-next")?.addEventListener("click", () => show(current + 1));
+  box.addEventListener("click", (event) => {
+    if (event.target === box) box.close();
+  });
+  box.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") show(current - 1);
+    if (event.key === "ArrowRight") show(current + 1);
+  });
+  box.addEventListener("close", () => {
+    img.removeAttribute("src");
+  });
+</script>
+
+<style>
+  .crumbs {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    color: var(--tl-text-muted);
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--tl-text-muted);
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .thumb {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--tl-warm-gray);
+    aspect-ratio: 1;
+  }
+
+  .thumb:focus-visible {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 2px;
+  }
+
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+  }
+
+  .thumb:hover img {
+    transform: scale(1.04);
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    font-weight: 700;
+    color: var(--tl-text-muted);
+  }
+
+  .cta {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+
+  .lightbox {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(1, 1, 1, 0.88);
+  }
+
+  #lb-img {
+    max-width: min(92vw, 1400px);
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .lb-close,
+  .lb-nav {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: var(--tl-white);
+    cursor: pointer;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.9rem;
+    line-height: 1;
+  }
+
+  .lb-close:hover,
+  .lb-nav:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .lb-close {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .lb-prev {
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .lb-next {
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+</style>

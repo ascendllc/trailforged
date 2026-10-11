@@ -9,6 +9,7 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     sitemap({
+      filter: (page) => !/\/(upload|photos)(\/|$)/.test(new URL(page).pathname),
       serialize(item) {
         return { ...item, lastmod: new Date() };
       },

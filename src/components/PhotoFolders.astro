@@ -1,0 +1,90 @@
+---
+interface Folder {
+  href: string;
+  label: string;
+  count: number;
+  cover: string;
+}
+
+interface Props {
+  folders: Folder[];
+}
+
+const { folders } = Astro.props;
+---
+
+<ul class="folders">
+  {
+    folders.map((folder) => (
+      <li>
+        <a class="folder" href={folder.href}>
+          <span class="folder-cover" style={`background-image:url(${folder.cover})`}></span>
+          <span class="folder-label">{folder.label}</span>
+          <span class="folder-count">
+            {folder.count} {folder.count === 1 ? "photo" : "photos"}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .folders {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .folder {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: var(--tl-black);
+    background: var(--tl-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    border-top: 4px solid var(--tl-brown);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .folder:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(1, 1, 1, 0.14);
+    color: var(--tl-black);
+  }
+
+  .folder:focus-visible {
+    outline: 2px solid var(--tl-red);
+    outline-offset: 2px;
+  }
+
+  .folder-cover {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background-color: var(--tl-warm-gray);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .folder-label {
+    display: block;
+    font-weight: 800;
+    font-size: 1.15rem;
+    padding: 0.75rem 1rem 0;
+    color: var(--tl-red);
+  }
+
+  .folder-count {
+    display: block;
+    padding: 0 1rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--tl-text-muted);
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import PhotoFolders from "../../components/PhotoFolders.astro";
+import Button from "../../components/Button.astro";
+import { listPhotos, groupCounts } from "../../lib/photos";
+
+export const prerender = false;
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+
+let loadFailed = false;
+let folders: { href: string; label: string; count: number; cover: string }[] = [];
+
+try {
+  const photos = await listPhotos();
+  const byYear = groupCounts(photos, (p) => p.year);
+  folders = [...byYear.entries()]
+    .sort(([a], [b]) => Number(b) - Number(a))
+    .map(([year, { count, cover }]) => ({ href: `/photos/${year}`, label: year, count, cover: cover.thumbUrl }));
+} catch (error) {
+  console.error("[photos] could not list photos:", error);
+  loadFailed = true;
+}
+---
+
+<BaseLayout title="Photo Gallery" description="Photos shared by Troop 337 families and leaders." noindex>
+  <section class="section section--white">
+    <div class="container">
+      <SectionHeading eyebrow="Troop 337" title="Photo Gallery" level="h1" />
+
+      <p class="intro">Browse photos by year, then by month.</p>
+
+      {loadFailed && <p class="empty">We couldn't load the gallery just now. Please try again in a moment.</p>}
+      {!loadFailed && folders.length === 0 && <p class="empty">No photos yet &mdash; be the first to add some!</p>}
+      {folders.length > 0 && <PhotoFolders folders={folders} />}
+
+      <div class="cta">
+        <Button href="/upload">Upload photos</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro,
+  .empty {
+    text-align: center;
+    color: var(--tl-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .cta {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+</style>

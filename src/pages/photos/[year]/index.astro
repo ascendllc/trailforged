@@ -1,0 +1,73 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import SectionHeading from "../../../components/SectionHeading.astro";
+import PhotoFolders from "../../../components/PhotoFolders.astro";
+import Button from "../../../components/Button.astro";
+import { listPhotos, groupCounts, isValidYear, monthName } from "../../../lib/photos";
+
+export const prerender = false;
+
+const { year = "" } = Astro.params;
+if (!isValidYear(year)) return Astro.rewrite("/404");
+
+Astro.response.headers.set("X-Robots-Tag", "noindex, nofollow");
+Astro.response.headers.set("Cache-Control", "public, s-maxage=30, stale-while-revalidate=120");
+
+let loadFailed = false;
+let folders: { href: string; label: string; count: number; cover: string }[] = [];
+
+try {
+  const photos = await listPhotos(`${year}/`);
+  const byMonth = groupCounts(photos, (p) => p.month);
+  folders = [...byMonth.entries()]
+    .sort(([a], [b]) => Number(b) - Number(a))
+    .map(([month, { count, cover }]) => ({
+      href: `/photos/${year}/${month}`,
+      label: monthName(month),
+      count,
+      cover: cover.thumbUrl,
+    }));
+} catch (error) {
+  console.error("[photos] could not list photos:", error);
+  loadFailed = true;
+}
+
+if (!loadFailed && folders.length === 0) return Astro.rewrite("/404");
+---
+
+<BaseLayout title={`${year} Photos`} description={`Troop 337 photos from ${year}.`} noindex>
+  <section class="section section--white">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/photos">Photos</a> <span aria-hidden="true">/</span> <span aria-current="page">{year}</span>
+      </nav>
+
+      <SectionHeading eyebrow="Photo Gallery" title={year} level="h1" />
+
+      {loadFailed && <p class="empty">We couldn't load the gallery just now. Please try again in a moment.</p>}
+      {folders.length > 0 && <PhotoFolders folders={folders} />}
+
+      <div class="cta">
+        <Button href="/upload">Upload photos</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .crumbs {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    color: var(--tl-text-muted);
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--tl-text-muted);
+  }
+
+  .cta {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+</style>
